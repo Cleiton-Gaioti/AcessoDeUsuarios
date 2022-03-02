@@ -3,7 +3,6 @@ package com.cleiton.gerenciar.presenter;
 
 import java.time.LocalDate;
 
-import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 
 import com.cleiton.gerenciar.dao.UsuarioDAO;
@@ -18,7 +17,7 @@ public class CadastrarUsuarioPresenter {
     private final UsuarioDAO userDAO;
 
     // CONSTRUCTOR
-    public CadastrarUsuarioPresenter(JDesktopPane desktop) {
+    public CadastrarUsuarioPresenter() {
         view = new CadastrarUsuarioView();
         userDAO = new UsuarioDAO();
 
@@ -30,7 +29,7 @@ public class CadastrarUsuarioPresenter {
             register();
         });
 
-        desktop.add(view);
+        view.setLocationRelativeTo(view.getParent());
         view.setVisible(true);
     }
 
@@ -43,21 +42,27 @@ public class CadastrarUsuarioPresenter {
         final var data = LocalDate.now();
 
         if (!userDAO.verifyEmail(email)) {
+
             JOptionPane.showMessageDialog(view, "Endereço de e-mail já cadastrado.");
-        }
 
-        if (!userDAO.verifyUsername(username)) {
+        } else if (!userDAO.verifyUsername(username)) {
+
             JOptionPane.showMessageDialog(view, "Nome de usuário já em uso.");
-        }
 
-        try {
-            UserModel newUser = new Usuario(name, email, username, password, data);
+        } else {
 
-            userDAO.insert(newUser);
+            try {
+                UserModel newUser = new Usuario(name, email, username, password, data, false);
 
-            view.dispose();
-        } catch (RuntimeException e) {
-            JOptionPane.showMessageDialog(view, "Erro ao realizar o cadastro: " + e.getMessage());
+                userDAO.insert(newUser);
+
+                JOptionPane.showMessageDialog(view, "Usuário cadastrado com sucesso.");
+                view.dispose();
+            } catch (RuntimeException e) {
+
+                JOptionPane.showMessageDialog(view, "Erro ao realizar o cadastro: " + e.getMessage());
+
+            }
         }
     }
 }

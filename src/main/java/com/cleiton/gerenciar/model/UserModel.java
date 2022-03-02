@@ -79,7 +79,12 @@ public abstract class UserModel {
 
     private void setUsername(String username) {
         if(username == null || username.isBlank() || username.isEmpty()) {
+
             throw new RuntimeException("Nome de usuário inválido.");
+
+        } else if (username.contains(" ") || !username.matches("^[A-z]{1,}[A-z0-9|-]*")) {
+
+            throw new RuntimeException("O nome de usuário não deve conter espaços em branco e deve começar obrigatoriamente por uma letra.");
         } else {
             this.username = username;
         }

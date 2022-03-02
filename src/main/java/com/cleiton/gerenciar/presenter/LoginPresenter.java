@@ -1,22 +1,23 @@
 
 package com.cleiton.gerenciar.presenter;
 
-import javax.swing.JDesktopPane;
+import javax.swing.JOptionPane;
 
 import com.cleiton.gerenciar.dao.UsuarioDAO;
+import com.cleiton.gerenciar.factory.PasswordEncryptor;
 import com.cleiton.gerenciar.view.LoginView;
 
 public class LoginPresenter {
 
     // ATTRIBUTES
     private final LoginView view;
-    private final JDesktopPane desktop;
     private final int countUsers;
+    private final UsuarioDAO userDAO;
 
     // CONSTRUCTOR
-    public LoginPresenter(JDesktopPane desktop) {
+    public LoginPresenter() {
         view = new LoginView();
-        this.desktop = desktop;
+        userDAO = new UsuarioDAO();
         countUsers = UsuarioDAO.countUsers();
 
         view.getBtnLogin().addActionListener(l -> {
@@ -27,20 +28,57 @@ public class LoginPresenter {
             register();
         });
 
-        desktop.add(view);
-        view.setLocation(250, 160);
+        view.getCheckShowPassword().addActionListener(l -> {
+            if (view.getCheckShowPassword().isSelected()) {
+                view.getTxtPassword().setEchoChar((char) 0);
+            } else {
+                view.getTxtPassword().setEchoChar('*');
+            }
+        });
+
+        view.setLocationRelativeTo(view.getParent());
         view.setVisible(true);
     }
 
     // METHODS
     private void register() {
-        if(countUsers == 0) {
-            new CadastrarUsuarioAdministradorPresenter(desktop, true);
+        if (countUsers == 0) {
+            new CadastrarUsuarioAdministradorPresenter(true);
         } else {
-            new CadastrarUsuarioPresenter(desktop);
+            new CadastrarUsuarioPresenter();
         }
     }
 
     private void login() {
+        var username = view.getTxtUser().getText();
+        var password = String.valueOf(view.getTxtPassword().getPassword());
+
+        if (username.isBlank() || username.isEmpty()) {
+
+            JOptionPane.showMessageDialog(view, "Informe o nome de usuário.");
+
+        } else if (password.isBlank() || password.isEmpty()) {
+
+            JOptionPane.showMessageDialog(view, "Informe uma senha.");
+
+        } else {
+
+            try {
+                var user = userDAO.login(username, PasswordEncryptor.encrypt(password));
+
+                if (user == null) {
+                    JOptionPane.showMessageDialog(view, "Credenciais incorretas. Verifique sua senha e email.");
+                } else {
+
+                    new PrincipalPresenter(user);
+                    view.dispose();
+                }
+            } catch (RuntimeException e) {
+                JOptionPane.showMessageDialog(view, "Erro ao realizar login." + e.getMessage());
+
+            }
+        }
+
     }
+
 }

@@ -1,11 +1,10 @@
-
 package com.cleiton.gerenciar.view;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 
-public class CadastrarUsuarioAdministradorView extends javax.swing.JInternalFrame {
+public class CadastrarUsuarioAdministradorView extends javax.swing.JFrame {
 
     public CadastrarUsuarioAdministradorView() {
         initComponents();
@@ -14,10 +13,6 @@ public class CadastrarUsuarioAdministradorView extends javax.swing.JInternalFram
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel4 = new javax.swing.JLabel();
-        txtName = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        txtEmail = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         txtUsername = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
@@ -25,13 +20,12 @@ public class CadastrarUsuarioAdministradorView extends javax.swing.JInternalFram
         checkAdministrador = new javax.swing.JCheckBox();
         btnRegister = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        txtName = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        txtEmail = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("Cadastrar Usuário");
-
-        jLabel4.setText("Nome");
-
-        jLabel1.setText("E-mail");
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel2.setText("Nome de usuário");
 
@@ -42,6 +36,10 @@ public class CadastrarUsuarioAdministradorView extends javax.swing.JInternalFram
         btnRegister.setText("Cadastrar");
 
         btnClose.setText("Fechar");
+
+        jLabel4.setText("Nome");
+
+        jLabel1.setText("E-mail");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -62,7 +60,7 @@ public class CadastrarUsuarioAdministradorView extends javax.swing.JInternalFram
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
                         .addComponent(checkAdministrador))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(btnClose)
@@ -101,7 +99,6 @@ public class CadastrarUsuarioAdministradorView extends javax.swing.JInternalFram
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnRegister;
@@ -120,56 +117,27 @@ public class CadastrarUsuarioAdministradorView extends javax.swing.JInternalFram
         return btnClose;
     }
 
-    public void setBtnClose(JButton btnClose) {
-        this.btnClose = btnClose;
-    }
-
     public JButton getBtnRegister() {
         return btnRegister;
-    }
-
-    public void setBtnRegister(JButton btnRegister) {
-        this.btnRegister = btnRegister;
     }
 
     public JCheckBox getCheckAdministrador() {
         return checkAdministrador;
     }
 
-    public void setCheckAdministrador(JCheckBox checkAdministrador) {
-        this.checkAdministrador = checkAdministrador;
-    }
-
     public JTextField getTxtEmail() {
         return txtEmail;
-    }
-
-    public void setTxtEmail(JTextField txtEmail) {
-        this.txtEmail = txtEmail;
     }
 
     public JTextField getTxtName() {
         return txtName;
     }
 
-    public void setTxtName(JTextField txtName) {
-        this.txtName = txtName;
-    }
-
     public JTextField getTxtPassword() {
         return txtPassword;
-    }
-
-    public void setTxtPassword(JTextField txtPassword) {
-        this.txtPassword = txtPassword;
     }
 
     public JTextField getTxtUsername() {
         return txtUsername;
     }
-
-    public void setTxtUser(JTextField txtUser) {
-        this.txtUsername = txtUser;
-    }
-
 }

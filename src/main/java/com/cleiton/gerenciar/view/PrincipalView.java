@@ -3,6 +3,7 @@ package com.cleiton.gerenciar.view;
 
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
+import javax.swing.JMenuItem;
 import javax.swing.JTextPane;
 
 public class PrincipalView extends javax.swing.JFrame {
@@ -18,6 +19,16 @@ public class PrincipalView extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         txtUser = new javax.swing.JTextPane();
         btnNotifications = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenuUsuario = new javax.swing.JMenu();
+        menuLogin = new javax.swing.JMenuItem();
+        menuUpdate = new javax.swing.JMenuItem();
+        menuLogout = new javax.swing.JMenuItem();
+        jMenuAdministrador = new javax.swing.JMenu();
+        menuAddUser = new javax.swing.JMenuItem();
+        menuListarUsuarios = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        menuSettings = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -26,6 +37,38 @@ public class PrincipalView extends javax.swing.JFrame {
         jScrollPane1.setViewportView(txtUser);
 
         btnNotifications.setText("0 notificações");
+
+        jMenuUsuario.setText("Usuário");
+
+        menuLogin.setText("Entrar");
+        jMenuUsuario.add(menuLogin);
+
+        menuUpdate.setText("Atualizar Dados");
+        jMenuUsuario.add(menuUpdate);
+
+        menuLogout.setText("Sair");
+        jMenuUsuario.add(menuLogout);
+
+        jMenuBar1.add(jMenuUsuario);
+
+        jMenuAdministrador.setText("Administrador");
+
+        menuAddUser.setText("Adicionar Usuário");
+        jMenuAdministrador.add(menuAddUser);
+
+        menuListarUsuarios.setText("Listar Usuários");
+        jMenuAdministrador.add(menuListarUsuarios);
+
+        jMenuBar1.add(jMenuAdministrador);
+
+        jMenu2.setText("Configurações");
+
+        menuSettings.setText("Configurações");
+        jMenu2.add(menuSettings);
+
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -40,7 +83,7 @@ public class PrincipalView extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 306, Short.MAX_VALUE)
+                .addComponent(desktop, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1)
@@ -53,7 +96,17 @@ public class PrincipalView extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnNotifications;
     private javax.swing.JDesktopPane desktop;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenuAdministrador;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenu jMenuUsuario;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JMenuItem menuAddUser;
+    private javax.swing.JMenuItem menuListarUsuarios;
+    private javax.swing.JMenuItem menuLogin;
+    private javax.swing.JMenuItem menuLogout;
+    private javax.swing.JMenuItem menuSettings;
+    private javax.swing.JMenuItem menuUpdate;
     private javax.swing.JTextPane txtUser;
     // End of variables declaration//GEN-END:variables
 
@@ -67,5 +120,13 @@ public class PrincipalView extends javax.swing.JFrame {
 
     public JTextPane getTxtUser() {
         return txtUser;
+    }
+
+    public JMenuItem getMenuLogin() {
+        return menuLogin;
+    }
+
+    public JMenuItem getMenuSettings() {
+        return menuSettings;
     }
 }

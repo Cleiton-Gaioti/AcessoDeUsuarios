@@ -1,48 +1,53 @@
 package com.cleiton.gerenciar.presenter;
 
-import javax.swing.JOptionPane;
+import com.cleiton.gerenciar.model.UsuarioLogadoState;
+import com.cleiton.gerenciar.model.LoginState;
 
-import com.cleiton.gerenciar.dao.UsuarioDAO;
-import com.cleiton.gerenciar.factory.ConnectionSQLite;
+import java.time.LocalDateTime;
+
+import javax.swing.JInternalFrame;
+
+import com.cleiton.gerenciar.factory.ILogger;
+import com.cleiton.gerenciar.factory.LoggerCSV;
 import com.cleiton.gerenciar.model.Administrador;
 import com.cleiton.gerenciar.model.UserModel;
-import com.cleiton.gerenciar.model.interfaces.Observer;
+import com.cleiton.gerenciar.model.interfaces.IUserObserver;
 import com.cleiton.gerenciar.view.PrincipalView;
 
-public class PrincipalPresenter implements Observer {
+public class PrincipalPresenter implements IUserObserver {
 
     // ATTRIBUTES
-    private static PrincipalView view;
-    private static UserModel user;
+    private final PrincipalView view;
+    private UserModel user;
+    private LoginState state;
+    private ILogger log;
 
-    // MAIN
-    public static void main(String[] args) {
+    // CONSTRUCTOR
+    public PrincipalPresenter(UserModel user) {
         view = new PrincipalView();
+        log = new LoggerCSV();
+        this.user = user;
 
-        init();
-    }
+        log.logUsuarioCRUD(user, "realizou login", LocalDateTime.now());
 
-    // METHODS
-    private static void init() {
+        setEstado(new UsuarioLogadoState(this));
+        updateFooter(user);
 
-        ConnectionSQLite.checkDiretorioDb();
+        view.getMenuLogin().addActionListener(l -> {
+            new LoginPresenter();
+        });
 
-        try {
-            UsuarioDAO.createTableUsuarios();
-        } catch (RuntimeException e) {
-
-            JOptionPane.showMessageDialog(view, e.getMessage());
-            System.exit(1);
-        }
-
-        new LoginPresenter(view.getDesktop());
+        view.getMenuSettings().addActionListener(l -> {
+            var settingsView = new SettingsPresenter(view.getDesktop());
+            settingsView.registerObserver(this);
+        });
 
         view.setSize(900, 600);
         view.setVisible(true);
         view.setLocationRelativeTo(view.getParent());
     }
 
-    private static void updateFooter(UserModel u) {
+    private void updateFooter(UserModel u) {
         var isAdmin = Administrador.class.isInstance(u);
 
         if (isAdmin) {
@@ -53,9 +58,16 @@ public class PrincipalPresenter implements Observer {
     }
 
     @Override
-    public void update(Object obj) {
-        user = (UserModel) obj;
+    public void update(ILogger log) {
+        this.log = log;
 
-        updateFooter(user);
+        for (JInternalFrame f : view.getDesktop().getAllFrames()) {
+            f.dispose();
+        }
+    }
+
+    // GETTERS AND SETTERS
+    public void setEstado(LoginState newState) {
+        state = newState;
     }
 }

@@ -2,7 +2,6 @@ package com.cleiton.gerenciar.presenter;
 
 import java.time.LocalDate;
 
-import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 
 import com.cleiton.gerenciar.dao.UsuarioDAO;
@@ -18,11 +17,11 @@ public class CadastrarUsuarioAdministradorPresenter {
     private final UsuarioDAO userDAO;
 
     // CONSTRUCTOR
-    public CadastrarUsuarioAdministradorPresenter(JDesktopPane desktop) {
-        this(desktop, false);
+    public CadastrarUsuarioAdministradorPresenter() {
+        this(false);
     }
 
-    public CadastrarUsuarioAdministradorPresenter(JDesktopPane desktop, boolean firstUser) {
+    public CadastrarUsuarioAdministradorPresenter(boolean firstUser) {
         view = new CadastrarUsuarioAdministradorView();
         userDAO = new UsuarioDAO();
 
@@ -39,7 +38,7 @@ public class CadastrarUsuarioAdministradorPresenter {
             register();
         });
 
-        desktop.add(view);
+        view.setLocationRelativeTo(view.getParent());
         view.setVisible(true);
     }
 
@@ -51,7 +50,7 @@ public class CadastrarUsuarioAdministradorPresenter {
         final var password = view.getTxtPassword().getText();
         final var administrador = view.getCheckAdministrador().isSelected();
         final var data = LocalDate.now();
-        
+
         if (!userDAO.verifyEmail(email)) {
             JOptionPane.showMessageDialog(view, "Endereço de e-mail já cadastrado.");
         }
@@ -67,10 +66,12 @@ public class CadastrarUsuarioAdministradorPresenter {
             if (administrador) {
                 newUser = new Administrador(name, email, username, password, data);
             } else {
-                newUser = new Usuario(name, email, username, password, data);
+                newUser = new Usuario(name, email, username, password, data, true);
             }
 
             userDAO.insert(newUser);
+            
+            JOptionPane.showMessageDialog(view, "Usuário cadastrado com sucesso.");
 
             view.dispose();
         } catch (RuntimeException e) {

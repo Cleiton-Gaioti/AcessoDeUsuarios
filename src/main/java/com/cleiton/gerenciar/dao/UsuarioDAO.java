@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import com.cleiton.gerenciar.factory.ConnectionSQLite;
 import com.cleiton.gerenciar.model.Administrador;
 import com.cleiton.gerenciar.model.UserModel;
+import com.cleiton.gerenciar.model.Usuario;
 
 public class UsuarioDAO {
 
@@ -21,7 +22,8 @@ public class UsuarioDAO {
                 + "username VARCHAR NOT NULL UNIQUE, "
                 + "password VARCHAR NOT NULL, "
                 + "dateRegister DATE NOT NULL, "
-                + "administrator INT DEFAULT 0"
+                + "administrator INT DEFAULT 0, "
+                + "authorized INT DEFAULT 0 "
                 + ")";
 
         try {
@@ -119,21 +121,28 @@ public class UsuarioDAO {
     }
 
     public void insert(UserModel newUser) {
-        var query = "INSERT INTO usuario (name, email, username, password, dateRegister, administrator) "
-                + "VALUES (?, ?, ?, ?, ?, ?)";
+        var query = "INSERT INTO usuario (name, email, username, password, dateRegister, administrator, authorized) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try {
             Connection conn = ConnectionSQLite.connect();
             PreparedStatement ps = conn.prepareStatement(query);
 
-            var isAdmin = Administrador.class.isInstance(newUser) ? 1 : 0;
+            var isAdmin = false;
+            var authorized = false;
+
+            if(Administrador.class.isInstance(newUser)) {
+                isAdmin = true;
+                authorized = true;
+            }
 
             ps.setString(1, newUser.getName());
             ps.setString(2, newUser.getEmail());
             ps.setString(3, newUser.getUsername());
             ps.setString(4, newUser.getPassword());
             ps.setDate(5, Date.valueOf(newUser.getDataCadastro()));
-            ps.setInt(6, isAdmin);
+            ps.setInt(6, isAdmin ? 1 : 0);
+            ps.setInt(7, authorized ? 1 : 0);
 
             ps.executeUpdate();
 
@@ -141,6 +150,43 @@ public class UsuarioDAO {
             conn.close();
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao inserir usuário: " + e.getMessage());
+        }
+    }
+
+    public UserModel login(String username, String password) {
+        var query = "SELECT * FROM usuario WHERE LOWER(username) = LOWER(?) AND password = ?";
+
+        try {
+            Connection conn = ConnectionSQLite.connect();
+            PreparedStatement ps = conn.prepareStatement(query);
+
+            ps.setString(1, username);
+            ps.setString(2, password);
+
+            ResultSet rs = ps.executeQuery();
+
+            UserModel user = null;
+
+            if(rs.next()) {
+                var id = rs.getInt("id");
+                var name = rs.getString("name");
+                var email = rs.getString("email");
+                username = rs.getString("username");
+                password = rs.getString("password");
+                var dataRegister = rs.getDate("dateRegister").toLocalDate();
+                var administrator = rs.getInt("administrator") == 1;
+                var authorized = rs.getInt("authorized") == 1;
+
+                if(administrator) {
+                    user = new Administrador(id, name, email, username, password, dataRegister);
+                } else {
+                    user = new Usuario(id, name, email, username, password, dataRegister, authorized);
+                }
+            }
+
+            return user;
+        } catch(SQLException e) {
+            throw new RuntimeException("Erro ao realizar login.");
         }
     }
 }
