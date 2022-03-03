@@ -1,10 +1,8 @@
 package com.cleiton.gerenciar.factory;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -34,17 +32,25 @@ public class LoggerCSV implements ILogger {
 
         file = new File(path);
 
-        try {
-            
-             CSVWriter writer = new CSVWriter(new FileWriter(file));
-             
-             String header[] = { "OPERACAO", "NOME", "DATA", "HORA", "USUARIO", "FALHA" };
-             
-             writer.writeNext(header);
-             writer.close();
-            
-        } catch (IOException e) {
-            throw new RuntimeException("Erro ao gravar log: " + e.getMessage());
+        if (!file.exists()) {
+
+            try {
+
+                CSVWriter writer = new CSVWriter(
+                        new FileWriter(file),
+                        ';',
+                        CSVWriter.NO_QUOTE_CHARACTER,
+                        CSVWriter.DEFAULT_ESCAPE_CHARACTER,
+                        CSVWriter.DEFAULT_LINE_END);
+
+                String header[] = { "OPERACAO", "NOME", "DATA", "HORA", "USUARIO", "FALHA" };
+
+                writer.writeNext(header, false);
+                writer.close();
+
+            } catch (IOException e) {
+                throw new RuntimeException("Erro ao gravar log: " + e.getMessage());
+            }
         }
 
     }
@@ -52,7 +58,7 @@ public class LoggerCSV implements ILogger {
     @Override
     public void logUsuarioCRUD(UserModel user, String operation, LocalDateTime dateTime) {
         try {
-            String header[] = {
+            String line[] = {
                     operation,
                     user.getName(),
                     dateTime.toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
@@ -62,13 +68,14 @@ public class LoggerCSV implements ILogger {
             };
 
             CSVWriter writer = new CSVWriter(
-                    new FileWriter(file),
+                    new FileWriter(file, true),
                     ';',
                     CSVWriter.NO_QUOTE_CHARACTER,
                     CSVWriter.DEFAULT_ESCAPE_CHARACTER,
                     CSVWriter.DEFAULT_LINE_END);
 
-            writer.writeNext(header);
+            writer.writeNext(line);
+            writer.close();
         } catch (IOException e) {
             throw new RuntimeException("Erro ao gravar log: " + e.getMessage());
         }
@@ -87,13 +94,14 @@ public class LoggerCSV implements ILogger {
             };
 
             CSVWriter writer = new CSVWriter(
-                    new FileWriter(file),
+                    new FileWriter(file, true),
                     ';',
                     CSVWriter.NO_QUOTE_CHARACTER,
                     CSVWriter.DEFAULT_ESCAPE_CHARACTER,
                     CSVWriter.DEFAULT_LINE_END);
 
             writer.writeNext(header);
+            writer.close();
         } catch (IOException e) {
             throw new RuntimeException("Erro ao gravar log: " + e.getMessage());
         }

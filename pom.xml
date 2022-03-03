@@ -39,6 +39,10 @@
             <artifactId>opencsv</artifactId>
             <version>5.6</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.pss</groupId>
+            <artifactId>ValidadorSenha</artifactId>
+            <version>1.08-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>
