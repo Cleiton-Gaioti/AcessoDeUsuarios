@@ -3,6 +3,7 @@ package com.cleiton.gerenciar.view;
 
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JTextPane;
 
@@ -21,8 +22,8 @@ public class PrincipalView extends javax.swing.JFrame {
         btnNotifications = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuUsuario = new javax.swing.JMenu();
-        menuLogin = new javax.swing.JMenuItem();
         menuUpdate = new javax.swing.JMenuItem();
+        menuLogin = new javax.swing.JMenuItem();
         menuLogout = new javax.swing.JMenuItem();
         jMenuAdministrador = new javax.swing.JMenu();
         menuAddUser = new javax.swing.JMenuItem();
@@ -40,11 +41,11 @@ public class PrincipalView extends javax.swing.JFrame {
 
         jMenuUsuario.setText("Usuário");
 
+        menuUpdate.setText("Atualizar Cadastro");
+        jMenuUsuario.add(menuUpdate);
+
         menuLogin.setText("Entrar");
         jMenuUsuario.add(menuLogin);
-
-        menuUpdate.setText("Atualizar Dados");
-        jMenuUsuario.add(menuUpdate);
 
         menuLogout.setText("Sair");
         jMenuUsuario.add(menuLogout);
@@ -122,11 +123,35 @@ public class PrincipalView extends javax.swing.JFrame {
         return txtUser;
     }
 
-    public JMenuItem getMenuLogin() {
-        return menuLogin;
-    }
-
     public JMenuItem getMenuSettings() {
         return menuSettings;
+    }   
+
+    public JMenu getjMenuAdministrador() {
+        return jMenuAdministrador;
+    }
+
+    public JMenu getjMenuUsuario() {
+        return jMenuUsuario;
+    }
+
+    public JMenuItem getMenuAddUser() {
+        return menuAddUser;
+    }
+
+    public JMenuItem getMenuListarUsuarios() {
+        return menuListarUsuarios;
+    }
+
+    public JMenuItem getMenuLogout() {
+        return menuLogout;
+    }
+
+    public JMenuItem getMenuUpdate() {
+        return menuUpdate;
+    }
+
+    public JMenuItem getMenuLogin() {
+        return menuLogin;
     }
 }

@@ -4,10 +4,10 @@ import javax.swing.JOptionPane;
 
 import com.cleiton.gerenciar.dao.UsuarioDAO;
 import com.cleiton.gerenciar.factory.ConnectionSQLite;
-import com.cleiton.gerenciar.presenter.LoginPresenter;
+import com.cleiton.gerenciar.presenter.PrincipalPresenter;
 
 public class Main {
-    
+
     public static void main(String[] args) {
         ConnectionSQLite.checkDiretorioDb();
 
@@ -19,6 +19,6 @@ public class Main {
             System.exit(1);
         }
 
-        new LoginPresenter();
+        new PrincipalPresenter();
     }
 }

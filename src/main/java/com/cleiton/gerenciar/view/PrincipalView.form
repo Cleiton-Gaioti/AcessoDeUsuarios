@@ -9,14 +9,14 @@
             <Property name="text" type="java.lang.String" value="Usu&#xe1;rio"/>
           </Properties>
           <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="menuUpdate">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Atualizar Cadastro"/>
+              </Properties>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuLogin">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Entrar"/>
-              </Properties>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="menuUpdate">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Atualizar Dados"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuLogout">

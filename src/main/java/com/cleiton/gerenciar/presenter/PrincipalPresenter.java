@@ -3,14 +3,14 @@ package com.cleiton.gerenciar.presenter;
 import com.cleiton.gerenciar.model.UsuarioLogadoState;
 import com.cleiton.gerenciar.model.LoginState;
 
-import java.time.LocalDateTime;
-
 import javax.swing.JInternalFrame;
 
 import com.cleiton.gerenciar.factory.ILogger;
 import com.cleiton.gerenciar.factory.LoggerCSV;
 import com.cleiton.gerenciar.model.Administrador;
+import com.cleiton.gerenciar.model.AdministradorLogadoState;
 import com.cleiton.gerenciar.model.UserModel;
+import com.cleiton.gerenciar.model.UsuarioDeslogadoState;
 import com.cleiton.gerenciar.model.interfaces.IUserObserver;
 import com.cleiton.gerenciar.view.PrincipalView;
 
@@ -23,18 +23,18 @@ public class PrincipalPresenter implements IUserObserver {
     private ILogger log;
 
     // CONSTRUCTOR
-    public PrincipalPresenter(UserModel user) {
+    public PrincipalPresenter() {
         view = new PrincipalView();
         log = new LoggerCSV();
-        this.user = user;
 
-        log.logUsuarioCRUD(user, "realizou login", LocalDateTime.now());
-
-        setEstado(new UsuarioLogadoState(this));
-        updateFooter(user);
+        setEstado(new UsuarioDeslogadoState(this));
+        
+        login();
+        
+        userDeslogado();
 
         view.getMenuLogin().addActionListener(l -> {
-            new LoginPresenter();
+            login();
         });
 
         view.getMenuSettings().addActionListener(l -> {
@@ -42,19 +42,46 @@ public class PrincipalPresenter implements IUserObserver {
             settingsView.registerObserver(this);
         });
 
+        view.getMenuUpdate().addActionListener(l -> {
+            updateUser();
+        });
+
         view.setSize(900, 600);
         view.setVisible(true);
         view.setLocationRelativeTo(view.getParent());
     }
+    
+    // METHODS
 
-    private void updateFooter(UserModel u) {
-        var isAdmin = Administrador.class.isInstance(u);
+    private void userDeslogado() {
+        view.getMenuLogout().setVisible(false);
+        view.getMenuUpdate().setVisible(false);
+        view.getjMenuAdministrador().setVisible(false);
+    }
+
+    private void login() {
+        var loginPresenter = new LoginPresenter(view.getDesktop(), log);
+        loginPresenter.registerObserver(this);
+    }
+
+    private void updateUser() {
+        // TODO: implementar
+    }
+
+    private void updateFooter(boolean isAdmin, String name) {
 
         if (isAdmin) {
-            view.getTxtUser().setText("Administrador - " + u.getName());
+            view.getTxtUser().setText("Administrador - " + name);
         } else {
-            view.getTxtUser().setText("Usuário - " + u.getName());
+            view.getTxtUser().setText("Usuário - " + name);
         }
+    }
+
+    private void userLayout() {
+        view.getjMenuAdministrador().setVisible(false);
+    }
+
+    private void adminLayout() {
     }
 
     @Override
@@ -63,6 +90,28 @@ public class PrincipalPresenter implements IUserObserver {
 
         for (JInternalFrame f : view.getDesktop().getAllFrames()) {
             f.dispose();
+        }
+
+        var deslogado = UsuarioDeslogadoState.class.isInstance(state);
+
+        if(deslogado) {
+            login();
+        }
+    }
+
+    public void update(UserModel user) {
+        this.user = user;
+
+        var isAdmin = Administrador.class.isInstance(user);
+
+        updateFooter(isAdmin, user.getName());
+
+        if (isAdmin) {
+            setEstado(new AdministradorLogadoState(this));
+            adminLayout();
+        } else {
+            setEstado(new UsuarioLogadoState(this));
+            userLayout();
         }
     }
 

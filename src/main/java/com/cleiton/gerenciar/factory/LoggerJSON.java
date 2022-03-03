@@ -47,7 +47,7 @@ public class LoggerJSON implements ILogger {
         try {
             FileWriter writer = new FileWriter(file, true);
 
-            writer.write(jsonObject.toJSONString() + "\n");
+            writer.write(jsonObject.toJSONString() + ",\n");
             writer.close();
         } catch (IOException e) {
             throw new RuntimeException("Erro ao gravar log: " + e.getMessage());

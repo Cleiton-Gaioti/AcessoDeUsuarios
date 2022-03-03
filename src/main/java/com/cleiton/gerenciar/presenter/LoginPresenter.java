@@ -1,24 +1,39 @@
 
 package com.cleiton.gerenciar.presenter;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 
 import com.cleiton.gerenciar.dao.UsuarioDAO;
+import com.cleiton.gerenciar.factory.ILogger;
 import com.cleiton.gerenciar.factory.PasswordEncryptor;
+import com.cleiton.gerenciar.model.UserModel;
+import com.cleiton.gerenciar.model.interfaces.IObservable;
+import com.cleiton.gerenciar.model.interfaces.IUserObserver;
 import com.cleiton.gerenciar.view.LoginView;
 
-public class LoginPresenter {
+public class LoginPresenter implements IObservable {
 
     // ATTRIBUTES
     private final LoginView view;
     private final int countUsers;
+    private final ILogger log;
+    private final List<IUserObserver> observers;
     private final UsuarioDAO userDAO;
+    private final JDesktopPane desktop;
 
     // CONSTRUCTOR
-    public LoginPresenter() {
+    public LoginPresenter(JDesktopPane desktop, ILogger log) {
         view = new LoginView();
         userDAO = new UsuarioDAO();
+        observers = new ArrayList<>();
         countUsers = UsuarioDAO.countUsers();
+        this.log = log;
+        this.desktop = desktop;
 
         view.getBtnLogin().addActionListener(l -> {
             login();
@@ -36,16 +51,17 @@ public class LoginPresenter {
             }
         });
 
-        view.setLocationRelativeTo(view.getParent());
+        view.setLocation(250, 160);
+        desktop.add(view);
         view.setVisible(true);
     }
 
     // METHODS
     private void register() {
         if (countUsers == 0) {
-            new CadastrarUsuarioAdministradorPresenter(true);
+            new CadastrarUsuarioAdministradorPresenter(desktop, log, true);
         } else {
-            new CadastrarUsuarioPresenter();
+            new CadastrarUsuarioPresenter(desktop, log);
         }
     }
 
@@ -70,15 +86,37 @@ public class LoginPresenter {
                     JOptionPane.showMessageDialog(view, "Credenciais incorretas. Verifique sua senha e email.");
                 } else {
 
-                    new PrincipalPresenter(user);
+                    log.logUsuarioCRUD(user, "entrou na conta", LocalDateTime.now());
+
+                    notifyObservers(user);
+
                     view.dispose();
                 }
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(view, "Erro ao realizar login." + e.getMessage());
 
+                log.logFalha(null, "fazer login", LocalDateTime.now(), e.getMessage());
+
             }
         }
 
+    }
+
+    @Override
+    public void registerObserver(IUserObserver observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObeserver(IUserObserver observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers(Object obj) {
+        observers.forEach(o -> {
+            o.update((UserModel)obj);
+        });
     }
 
 }

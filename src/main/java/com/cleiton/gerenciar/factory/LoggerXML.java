@@ -21,6 +21,8 @@ import com.cleiton.gerenciar.model.UserModel;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+// TODO: consertar log.
+
 public class LoggerXML implements ILogger {
 
     // ATTRIBUTES

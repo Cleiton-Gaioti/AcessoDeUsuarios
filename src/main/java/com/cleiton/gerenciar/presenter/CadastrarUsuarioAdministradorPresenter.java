@@ -1,10 +1,13 @@
 package com.cleiton.gerenciar.presenter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
 
 import com.cleiton.gerenciar.dao.UsuarioDAO;
+import com.cleiton.gerenciar.factory.ILogger;
 import com.cleiton.gerenciar.model.Administrador;
 import com.cleiton.gerenciar.model.Usuario;
 import com.cleiton.gerenciar.model.UserModel;
@@ -15,15 +18,17 @@ public class CadastrarUsuarioAdministradorPresenter {
     // ATTRIBUTES
     private final CadastrarUsuarioAdministradorView view;
     private final UsuarioDAO userDAO;
+    private final ILogger log;
 
     // CONSTRUCTOR
-    public CadastrarUsuarioAdministradorPresenter() {
-        this(false);
+    public CadastrarUsuarioAdministradorPresenter(JDesktopPane desktop, ILogger log) {
+        this(desktop, log, false);
     }
 
-    public CadastrarUsuarioAdministradorPresenter(boolean firstUser) {
+    public CadastrarUsuarioAdministradorPresenter(JDesktopPane desktop, ILogger log, boolean firstUser) {
         view = new CadastrarUsuarioAdministradorView();
         userDAO = new UsuarioDAO();
+        this.log = log;
 
         if (firstUser) {
             view.getCheckAdministrador().setSelected(true);
@@ -38,7 +43,15 @@ public class CadastrarUsuarioAdministradorPresenter {
             register();
         });
 
-        view.setLocationRelativeTo(view.getParent());
+        view.getCheckShowPassword().addActionListener(l -> {
+            if (view.getCheckShowPassword().isSelected()) {
+                view.getTxtPassword().setEchoChar((char) 0);
+            } else {
+                view.getTxtPassword().setEchoChar('*');
+            }
+        });
+
+        desktop.add(desktop);
         view.setVisible(true);
     }
 
@@ -47,7 +60,7 @@ public class CadastrarUsuarioAdministradorPresenter {
         final var name = view.getTxtName().getText();
         final var email = view.getTxtEmail().getText();
         final var username = view.getTxtUsername().getText();
-        final var password = view.getTxtPassword().getText();
+        final var password = String.valueOf(view.getTxtPassword().getPassword());
         final var administrador = view.getCheckAdministrador().isSelected();
         final var data = LocalDate.now();
 
@@ -70,12 +83,15 @@ public class CadastrarUsuarioAdministradorPresenter {
             }
 
             userDAO.insert(newUser);
-            
+
             JOptionPane.showMessageDialog(view, "Usuário cadastrado com sucesso.");
+            log.logUsuarioCRUD(newUser, "realizou cadastro", LocalDateTime.now());
 
             view.dispose();
         } catch (RuntimeException e) {
             JOptionPane.showMessageDialog(view, "Erro ao realizar o cadastro: " + e.getMessage());
+
+            log.logFalha(null, "cadastrar novo usuário", LocalDateTime.now(), e.getMessage());
         }
     }
 

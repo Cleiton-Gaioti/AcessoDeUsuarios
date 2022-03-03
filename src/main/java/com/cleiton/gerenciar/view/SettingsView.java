@@ -19,9 +19,12 @@ public class SettingsView extends javax.swing.JInternalFrame {
         btnApply = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
 
+        setTitle("Configurações");
+
         jLabel1.setText("Persistência de Log");
 
-        radioButtonCSV.setText("CSV");
+        radioButtonCSV.setSelected(true);
+        radioButtonCSV.setText("CSV (default)");
 
         radioButtonJSON.setText("JSON");
 
