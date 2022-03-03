@@ -2,7 +2,7 @@
 package com.cleiton.gerenciar.presenter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
@@ -11,6 +11,7 @@ import com.cleiton.gerenciar.dao.UsuarioDAO;
 import com.cleiton.gerenciar.factory.ILogger;
 import com.cleiton.gerenciar.model.Usuario;
 import com.cleiton.gerenciar.model.UserModel;
+import com.cleiton.gerenciar.model.LogModel;
 import com.cleiton.gerenciar.view.CadastrarUsuarioView;
 
 public class CadastrarUsuarioPresenter {
@@ -71,14 +72,15 @@ public class CadastrarUsuarioPresenter {
 
                 JOptionPane.showMessageDialog(view, "Usuário cadastrado com sucesso.");
 
-                log.logUsuarioCRUD(newUser, "realizou cadastro", LocalDateTime.now());
+                log.logUsuarioCRUD(new LogModel("entrou na conta", newUser.getName(), LocalDate.now(), LocalTime.now(),
+                        newUser.getUsername(), ""));
 
                 view.dispose();
             } catch (RuntimeException e) {
 
                 JOptionPane.showMessageDialog(view, "Erro ao realizar o cadastro: " + e.getMessage());
 
-                log.logFalha(null, "realizar cadastro", LocalDateTime.now(), e.getMessage());
+                log.logFalha(new LogModel("entrou na conta", "", LocalDate.now(), LocalTime.now(), "", ""));
             }
         }
     }

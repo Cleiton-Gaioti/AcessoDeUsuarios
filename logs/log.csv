@@ -1,1 +1,6 @@
-"OPERACAO","NOME","DATA","HORA","USUARIO","FALHA"
+OPERACAO;NOME;DATA;HORA;USUARIO;FALHA
+entrou na conta;Cleiton Gaioti;03/03/2022;10:54:27;cleiton-gaioti;
+entrou na conta;Cleiton Gaioti;03/03/2022;12:31:37;cleiton-gaioti;
+entrou na conta;Cleiton Gaioti;03/03/2022;12:32:50;cleiton-gaioti;
+entrou na conta;Cleiton Gaioti;03/03/2022;12:37:13;cleiton-gaioti;
+entrou na conta;Cleiton Gaioti;03/03/2022;12:40:36;cleiton-gaioti;

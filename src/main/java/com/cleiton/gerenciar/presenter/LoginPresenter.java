@@ -1,7 +1,8 @@
 
 package com.cleiton.gerenciar.presenter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import com.cleiton.gerenciar.dao.UsuarioDAO;
 import com.cleiton.gerenciar.factory.ILogger;
 import com.cleiton.gerenciar.factory.PasswordEncryptor;
 import com.cleiton.gerenciar.model.UserModel;
+import com.cleiton.gerenciar.model.LogModel;
 import com.cleiton.gerenciar.model.interfaces.IObservable;
 import com.cleiton.gerenciar.model.interfaces.IUserObserver;
 import com.cleiton.gerenciar.view.LoginView;
@@ -86,7 +88,8 @@ public class LoginPresenter implements IObservable {
                     JOptionPane.showMessageDialog(view, "Credenciais incorretas. Verifique sua senha e email.");
                 } else {
 
-                    log.logUsuarioCRUD(user, "entrou na conta", LocalDateTime.now());
+                    log.logUsuarioCRUD(new LogModel("entrou na conta", user.getName(), LocalDate.now(), LocalTime.now(),
+                            user.getUsername(), ""));
 
                     notifyObservers(user);
 
@@ -95,7 +98,7 @@ public class LoginPresenter implements IObservable {
             } catch (RuntimeException e) {
                 JOptionPane.showMessageDialog(view, "Erro ao realizar login." + e.getMessage());
 
-                log.logFalha(null, "fazer login", LocalDateTime.now(), e.getMessage());
+                log.logFalha(new LogModel("entrou na conta", "", LocalDate.now(), LocalTime.now(), "", ""));
 
             }
         }
@@ -115,7 +118,7 @@ public class LoginPresenter implements IObservable {
     @Override
     public void notifyObservers(Object obj) {
         observers.forEach(o -> {
-            o.update((UserModel)obj);
+            o.update((UserModel) obj);
         });
     }
 

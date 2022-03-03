@@ -12,7 +12,7 @@
     </properties>
 
     <dependencies>
-        
+
         <!-- https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc -->
         <dependency>
             <groupId>org.xerial</groupId>
@@ -33,7 +33,7 @@
             <artifactId>mail</artifactId>
             <version>1.5.0-b01</version>
         </dependency>
-        
+
         <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
@@ -44,5 +44,13 @@
             <artifactId>ValidadorSenha</artifactId>
             <version>1.08-SNAPSHOT</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.thoughtworks.xstream/xstream -->
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.4.19</version>
+        </dependency>
+
     </dependencies>
 </project>

@@ -3,10 +3,9 @@ package com.cleiton.gerenciar.factory;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import com.cleiton.gerenciar.model.UserModel;
+import com.cleiton.gerenciar.model.LogModel;
 import com.opencsv.CSVWriter;
 
 // TODO: consertar log.
@@ -56,15 +55,15 @@ public class LoggerCSV implements ILogger {
     }
 
     @Override
-    public void logUsuarioCRUD(UserModel user, String operation, LocalDateTime dateTime) {
+    public void logUsuarioCRUD(LogModel log) {
         try {
             String line[] = {
-                    operation,
-                    user.getName(),
-                    dateTime.toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                    dateTime.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
-                    user.getUsername(),
-                    ""
+                    log.getOperation(),
+                    log.getName(),
+                    log.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                    log.getHour().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
+                    log.getUsername(),
+                    log.getException()
             };
 
             CSVWriter writer = new CSVWriter(
@@ -82,15 +81,15 @@ public class LoggerCSV implements ILogger {
     }
 
     @Override
-    public void logFalha(UserModel user, String operation, LocalDateTime dateTime, String exception) {
+    public void logFalha(LogModel log) {
         try {
             String header[] = {
-                    operation,
-                    user.getName(),
-                    dateTime.toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                    dateTime.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
-                    user.getUsername(),
-                    exception
+                    log.getOperation(),
+                    log.getName(),
+                    log.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                    log.getHour().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
+                    log.getUsername(),
+                    log.getException()
             };
 
             CSVWriter writer = new CSVWriter(

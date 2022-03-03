@@ -3,11 +3,10 @@ package com.cleiton.gerenciar.factory;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
-import com.cleiton.gerenciar.model.UserModel;
+import com.cleiton.gerenciar.model.LogModel;
 
 import org.json.simple.JSONObject;
 
@@ -33,14 +32,14 @@ public class LoggerJSON implements ILogger {
     }
 
     @Override
-    public void logUsuarioCRUD(UserModel user, String operation, LocalDateTime dateTime) {
+    public void logUsuarioCRUD(LogModel log) {
         HashMap<String, Object> hashObject = new HashMap<>();
 
-        hashObject.put("OPERACAO", operation);
-        hashObject.put("NOME", user.getName());
-        hashObject.put("DATA", dateTime.toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        hashObject.put("HORA", dateTime.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
-        hashObject.put("USUARIO", user.getUsername());
+        hashObject.put("OPERACAO", log.getOperation());
+        hashObject.put("NOME", log.getName());
+        hashObject.put("DATA", log.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        hashObject.put("HORA", log.getHour().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+        hashObject.put("USUARIO", log.getUsername());
 
         JSONObject jsonObject = new JSONObject(hashObject);
 
@@ -55,15 +54,15 @@ public class LoggerJSON implements ILogger {
     }
 
     @Override
-    public void logFalha(UserModel user, String operation, LocalDateTime dateTime, String exception) {
+    public void logFalha(LogModel log) {
         HashMap<String, Object> hashObject = new HashMap<>();
 
-        hashObject.put("EXCESSAO", exception);
-        hashObject.put("OPERACAO", operation);
-        hashObject.put("NOME", user.getName());
-        hashObject.put("DATA", dateTime.toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        hashObject.put("HORA", dateTime.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
-        hashObject.put("USUARIO", user.getUsername());
+        hashObject.put("EXCESSAO", log.getException());
+        hashObject.put("OPERACAO", log.getOperation());
+        hashObject.put("NOME", log.getName());
+        hashObject.put("DATA", log.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        hashObject.put("HORA", log.getHour().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+        hashObject.put("USUARIO", log.getUsername());
 
         JSONObject jsonObject = new JSONObject(hashObject);
 
