@@ -13,6 +13,7 @@ import com.cleiton.gerenciar.model.Usuario;
 import com.cleiton.gerenciar.model.UserModel;
 import com.cleiton.gerenciar.model.LogModel;
 import com.cleiton.gerenciar.view.CadastrarUsuarioView;
+import com.pss.senha.validacao.ValidadorSenha;
 
 public class CadastrarUsuarioPresenter {
 
@@ -55,6 +56,9 @@ public class CadastrarUsuarioPresenter {
         final var password = String.valueOf(view.getTxtPassword().getPassword());
         final var data = LocalDate.now();
 
+        ValidadorSenha validadorSenha = new ValidadorSenha();
+        var result = validadorSenha.validar(password);
+
         if (!userDAO.verifyEmail(email)) {
 
             JOptionPane.showMessageDialog(view, "Endereço de e-mail já cadastrado.");
@@ -62,6 +66,10 @@ public class CadastrarUsuarioPresenter {
         } else if (!userDAO.verifyUsername(username)) {
 
             JOptionPane.showMessageDialog(view, "Nome de usuário já em uso.");
+
+        } else if (!result.isEmpty()) {
+
+            JOptionPane.showMessageDialog(view, result.get(0));
 
         } else {
 
@@ -84,4 +92,5 @@ public class CadastrarUsuarioPresenter {
             }
         }
     }
+
 }

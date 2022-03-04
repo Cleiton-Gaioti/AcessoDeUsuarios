@@ -1,6 +1,8 @@
 package com.cleiton.gerenciar.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -8,7 +10,7 @@ import javax.mail.internet.InternetAddress;
 import com.cleiton.gerenciar.factory.PasswordEncryptor;
 
 public abstract class UserModel {
-    
+
     // ATTRIBUTES
     private int id;
     private String name;
@@ -16,15 +18,22 @@ public abstract class UserModel {
     private String username;
     private String password;
     private LocalDate dataCadastro;
+    private List<Notification> notifications;
 
     // CONSTRUCTOR
-    public UserModel(int id, String name, String email, String username, String password, LocalDate data) {
+    public UserModel(int id, String name, String email, String username, String password, LocalDate data,
+            List<Notification> notifications) {
         setId(id);
         setName(name);
         setEmail(email);
         setUsername(username);
         setPassword(password);
         setDataCadastro(data);
+        setNotifications(notifications);
+    }
+
+    public UserModel(int id, String name, String email, String username, String password, LocalDate data) {
+        this(id, name, email, username, password, data, new ArrayList<>());
     }
 
     public UserModel(String name, String email, String username, String password, LocalDate data) {
@@ -46,8 +55,8 @@ public abstract class UserModel {
     }
 
     private void setName(String name) {
-        
-        if(name == null || name.isBlank() || name.isEmpty()) {
+
+        if (name == null || name.isBlank() || name.isEmpty()) {
             throw new RuntimeException("Nome inválido.");
         } else {
             this.name = name;
@@ -59,7 +68,7 @@ public abstract class UserModel {
     }
 
     private void setEmail(String email) {
-        if(email == null || email.isBlank() || email.isEmpty()) {
+        if (email == null || email.isBlank() || email.isEmpty()) {
             throw new RuntimeException("Email inválido");
         } else {
             try {
@@ -78,13 +87,14 @@ public abstract class UserModel {
     }
 
     private void setUsername(String username) {
-        if(username == null || username.isBlank() || username.isEmpty()) {
+        if (username == null || username.isBlank() || username.isEmpty()) {
 
             throw new RuntimeException("Nome de usuário inválido.");
 
         } else if (username.contains(" ") || !username.matches("^[A-z]{1,}[A-z0-9|-]*")) {
 
-            throw new RuntimeException("O nome de usuário não deve conter espaços em branco e deve começar obrigatoriamente por uma letra.");
+            throw new RuntimeException(
+                    "O nome de usuário não deve conter espaços em branco e deve começar obrigatoriamente por uma letra.");
         } else {
             this.username = username;
         }
@@ -95,13 +105,7 @@ public abstract class UserModel {
     }
 
     private void setPassword(String password) {
-        if(password == null || password.isBlank() || password.isEmpty()) {
-            throw new RuntimeException("Senha inválida. A senha deve conter de 6 a 10 caracteres e conter letras minúsculas e maiúscula,pelo menos um dígito e um caractere especial");
-        } else {
-            this.password = PasswordEncryptor.encrypt(password);
-        }
-
-        // TODO: add verificação de senha.
+        this.password = PasswordEncryptor.encrypt(password);
     }
 
     public LocalDate getDataCadastro() {
@@ -109,11 +113,19 @@ public abstract class UserModel {
     }
 
     private void setDataCadastro(LocalDate data) {
-        if(data == null) {
+        if (data == null) {
             throw new RuntimeException("Data de cadastro inválida.");
         } else {
 
             this.dataCadastro = data;
         }
+    }
+
+    public List<Notification> getNotifications() {
+        return this.notifications;
+    }
+
+    private void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
     }
 }

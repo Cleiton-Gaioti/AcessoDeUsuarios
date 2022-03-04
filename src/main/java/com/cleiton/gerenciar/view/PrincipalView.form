@@ -31,11 +31,6 @@
             <Property name="text" type="java.lang.String" value="Administrador"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="menuAddUser">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Adicionar Usu&#xe1;rio"/>
-              </Properties>
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuListarUsuarios">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Listar Usu&#xe1;rios"/>

@@ -1,14 +1,11 @@
 package com.cleiton.gerenciar.factory;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 
 import com.cleiton.gerenciar.model.LogModel;
 import com.thoughtworks.xstream.XStream;
-
-// TODO: implementar log.
 
 public class LoggerXML implements ILogger {
 

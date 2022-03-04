@@ -2,6 +2,7 @@ package com.cleiton.gerenciar;
 
 import javax.swing.JOptionPane;
 
+import com.cleiton.gerenciar.dao.NotificationDAO;
 import com.cleiton.gerenciar.dao.UsuarioDAO;
 import com.cleiton.gerenciar.factory.ConnectionSQLite;
 import com.cleiton.gerenciar.presenter.PrincipalPresenter;
@@ -13,6 +14,7 @@ public class Main {
 
         try {
             UsuarioDAO.createTableUsuarios();
+            NotificationDAO.createTableNotification();
         } catch (RuntimeException e) {
 
             JOptionPane.showMessageDialog(null, e.getMessage());

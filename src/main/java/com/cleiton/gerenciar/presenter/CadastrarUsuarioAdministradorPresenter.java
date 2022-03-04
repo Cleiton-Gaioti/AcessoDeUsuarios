@@ -13,6 +13,7 @@ import com.cleiton.gerenciar.model.LogModel;
 import com.cleiton.gerenciar.model.Usuario;
 import com.cleiton.gerenciar.model.UserModel;
 import com.cleiton.gerenciar.view.CadastrarUsuarioAdministradorView;
+import com.pss.senha.validacao.ValidadorSenha;
 
 public class CadastrarUsuarioAdministradorPresenter {
 
@@ -52,7 +53,7 @@ public class CadastrarUsuarioAdministradorPresenter {
             }
         });
 
-        desktop.add(desktop);
+        desktop.add(view);
         view.setVisible(true);
     }
 
@@ -65,35 +66,44 @@ public class CadastrarUsuarioAdministradorPresenter {
         final var administrador = view.getCheckAdministrador().isSelected();
         final var data = LocalDate.now();
 
-        if (!userDAO.verifyEmail(email)) {
-            JOptionPane.showMessageDialog(view, "Endereço de e-mail já cadastrado.");
-        }
-
-        if (!userDAO.verifyUsername(username)) {
-            JOptionPane.showMessageDialog(view, "Nome de usuário já em uso.");
-        }
-
         UserModel newUser;
 
-        try {
+        ValidadorSenha validadorSenha = new ValidadorSenha();
+        var result = validadorSenha.validar(password);
 
-            if (administrador) {
-                newUser = new Administrador(name, email, username, password, data);
-            } else {
-                newUser = new Usuario(name, email, username, password, data, true);
+        if (!userDAO.verifyEmail(email)) {
+
+            JOptionPane.showMessageDialog(view, "Endereço de e-mail já cadastrado.");
+
+        } else if (!userDAO.verifyUsername(username)) {
+
+            JOptionPane.showMessageDialog(view, "Nome de usuário já em uso.");
+
+        } else if (!result.isEmpty()) {
+
+            JOptionPane.showMessageDialog(view, result.get(0));
+        } else {
+
+            try {
+
+                if (administrador) {
+                    newUser = new Administrador(name, email, username, password, data);
+                } else {
+                    newUser = new Usuario(name, email, username, password, data, true);
+                }
+
+                userDAO.insert(newUser);
+
+                JOptionPane.showMessageDialog(view, "Usuário cadastrado com sucesso.");
+                log.logUsuarioCRUD(new LogModel("entrou na conta", newUser.getName(), LocalDate.now(), LocalTime.now(),
+                        newUser.getUsername(), ""));
+
+                view.dispose();
+            } catch (RuntimeException e) {
+                JOptionPane.showMessageDialog(view, "Erro ao realizar o cadastro: " + e.getMessage());
+
+                log.logFalha(new LogModel("entrou na conta", "", LocalDate.now(), LocalTime.now(), "", ""));
             }
-
-            userDAO.insert(newUser);
-
-            JOptionPane.showMessageDialog(view, "Usuário cadastrado com sucesso.");
-            log.logUsuarioCRUD(new LogModel("entrou na conta", newUser.getName(), LocalDate.now(), LocalTime.now(),
-                    newUser.getUsername(), ""));
-
-            view.dispose();
-        } catch (RuntimeException e) {
-            JOptionPane.showMessageDialog(view, "Erro ao realizar o cadastro: " + e.getMessage());
-
-            log.logFalha(new LogModel("entrou na conta", "", LocalDate.now(), LocalTime.now(), "", ""));
         }
     }
 

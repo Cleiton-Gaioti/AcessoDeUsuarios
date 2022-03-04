@@ -26,7 +26,6 @@ public class PrincipalView extends javax.swing.JFrame {
         menuLogin = new javax.swing.JMenuItem();
         menuLogout = new javax.swing.JMenuItem();
         jMenuAdministrador = new javax.swing.JMenu();
-        menuAddUser = new javax.swing.JMenuItem();
         menuListarUsuarios = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         menuSettings = new javax.swing.JMenuItem();
@@ -53,9 +52,6 @@ public class PrincipalView extends javax.swing.JFrame {
         jMenuBar1.add(jMenuUsuario);
 
         jMenuAdministrador.setText("Administrador");
-
-        menuAddUser.setText("Adicionar Usuário");
-        jMenuAdministrador.add(menuAddUser);
 
         menuListarUsuarios.setText("Listar Usuários");
         jMenuAdministrador.add(menuListarUsuarios);
@@ -102,7 +98,6 @@ public class PrincipalView extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu jMenuUsuario;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JMenuItem menuAddUser;
     private javax.swing.JMenuItem menuListarUsuarios;
     private javax.swing.JMenuItem menuLogin;
     private javax.swing.JMenuItem menuLogout;
@@ -133,10 +128,6 @@ public class PrincipalView extends javax.swing.JFrame {
 
     public JMenu getjMenuUsuario() {
         return jMenuUsuario;
-    }
-
-    public JMenuItem getMenuAddUser() {
-        return menuAddUser;
     }
 
     public JMenuItem getMenuListarUsuarios() {
