@@ -22,6 +22,7 @@ public abstract class PasswordEncryptor {
 
             return passwordHash;
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+
             throw new RuntimeException("Erro ao criptogravar senha.");
         }
     }

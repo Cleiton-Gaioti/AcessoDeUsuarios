@@ -29,7 +29,7 @@ public class SettingsPresenter implements IObservable {
         btnGroup.add(view.getRadioButtonCSV());
         btnGroup.add(view.getRadioButtonJSON());
         btnGroup.add(view.getRadioButtonXML());
-        
+
         view.getBtnCancel().addActionListener(l -> {
             view.dispose();
         });
@@ -44,7 +44,7 @@ public class SettingsPresenter implements IObservable {
 
     // METHODS
     private void apply() {
-        if(view.getRadioButtonCSV().isSelected()) {
+        if (view.getRadioButtonCSV().isSelected()) {
             notifyObservers(new LoggerCSV());
         } else if (view.getRadioButtonJSON().isSelected()) {
             notifyObservers(new LoggerJSON());
@@ -54,20 +54,20 @@ public class SettingsPresenter implements IObservable {
     }
 
     @Override
-    public void registerObserver(IUserObserver observer) {
-        observers.add(observer);
+    public void registerObserver(Object observer) {
+        observers.add((IUserObserver) observer);
     }
 
     @Override
-    public void removeObeserver(IUserObserver observer) {
-        observers.remove(observer);
+    public void removeObeserver(Object observer) {
+        observers.remove((IUserObserver) observer);
     }
 
     @Override
     public void notifyObservers(Object obj) {
         observers.forEach(o -> {
-            o.update((ILogger)obj);
+            o.update((ILogger) obj);
         });
     }
-    
+
 }

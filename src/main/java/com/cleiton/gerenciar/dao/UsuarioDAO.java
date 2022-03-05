@@ -9,9 +9,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.cleiton.gerenciar.collection.NotificationCollection;
 import com.cleiton.gerenciar.factory.ConnectionSQLite;
 import com.cleiton.gerenciar.model.Administrador;
-import com.cleiton.gerenciar.model.Notification;
 import com.cleiton.gerenciar.model.UserModel;
 import com.cleiton.gerenciar.model.Usuario;
 
@@ -123,7 +123,7 @@ public class UsuarioDAO {
         }
     }
 
-    public void insert(UserModel newUser) {
+    public void insert(UserModel newUser, boolean authorized) {
         var query = "INSERT INTO usuario (name, email, username, password, dateRegister, administrator, authorized) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
@@ -132,7 +132,6 @@ public class UsuarioDAO {
             PreparedStatement ps = conn.prepareStatement(query);
 
             var isAdmin = false;
-            var authorized = false;
 
             if (Administrador.class.isInstance(newUser)) {
                 isAdmin = true;
@@ -180,10 +179,16 @@ public class UsuarioDAO {
                 var administrator = rs.getInt("administrator") == 1;
                 var authorized = rs.getInt("authorized") == 1;
 
-                if (administrator) {
-                    user = new Administrador(id, name, email, username, password, dataRegister);
+                var notifications = new NotificationDAO().getNotificationsByUser(id);
+
+                if (!authorized) {
+                    throw new RuntimeException(
+                            "Usuário não autorizado. Espere até que um administrador autorize sua criação de usuário.");
+
+                } else if (administrator) {
+                    user = new Administrador(id, name, email, username, password, dataRegister, notifications);
                 } else {
-                    user = new Usuario(id, name, email, username, password, dataRegister, authorized);
+                    user = new Usuario(id, name, email, username, password, dataRegister, authorized, notifications);
                 }
             }
 
@@ -220,7 +225,7 @@ public class UsuarioDAO {
                 var administrator = rs.getInt("administrator") == 1;
                 var authorized = rs.getInt("authorized") == 1;
 
-                List<Notification> notifications = notificationDAO.getNotificationsByUser(id);
+                NotificationCollection notifications = notificationDAO.getNotificationsByUser(id);
 
                 if (administrator) {
                     users.add(new Administrador(id, name, email, username, password, dataRegister, notifications));
@@ -269,7 +274,7 @@ public class UsuarioDAO {
                 var administrator = rs.getInt("administrator") == 1;
                 var authorized = rs.getInt("authorized") == 1;
 
-                List<Notification> notifications = notificationDAO.getNotificationsByUser(id);
+                NotificationCollection notifications = notificationDAO.getNotificationsByUser(id);
 
                 if (administrator) {
                     users.add(new Administrador(id, name, email, username, password, dataRegister, notifications));
@@ -289,7 +294,7 @@ public class UsuarioDAO {
         }
     }
 
-    public static void removeUser(int id) {
+    public void removeUser(int id) {
         var query = "DELETE FROM usuario WHERE id = ?";
 
         try {
@@ -304,6 +309,98 @@ public class UsuarioDAO {
             conn.close();
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao buscar usuário.");
+        }
+    }
+
+    public UserModel getUserById(int id) {
+        var query = "SELECT * FROM usuario WHERE id = ?";
+
+        try {
+            Connection conn = ConnectionSQLite.connect();
+            PreparedStatement ps = conn.prepareStatement(query);
+
+            ps.setInt(1, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            UserModel user = null;
+
+            if (rs.next()) {
+                var name = rs.getString("name");
+                var email = rs.getString("email");
+                var username = rs.getString("username");
+                var password = rs.getString("password");
+                var dataRegister = rs.getDate("dateRegister").toLocalDate();
+                var administrator = rs.getInt("administrator") == 1;
+                var authorized = rs.getInt("authorized") == 1;
+
+                if (administrator) {
+
+                    user = new Administrador(id, name, email, username, password, dataRegister);
+
+                } else {
+
+                    user = new Usuario(id, name, email, username, password, dataRegister, authorized);
+
+                }
+            }
+
+            rs.close();
+            ps.close();
+            conn.close();
+
+            return user;
+        } catch (SQLException e) {
+
+            throw new RuntimeException("Erro ao buscar usuário.");
+
+        }
+    }
+
+    public void updateUser(int idUser, String name, String email, boolean admin) {
+        var query = "UPDATE usuario set name = ?, email = ?, administrator = ? WHERE id = ?";
+
+        try {
+            Connection conn = ConnectionSQLite.connect();
+            PreparedStatement ps = conn.prepareStatement(query);
+
+            ps.setString(1, name);
+            ps.setString(2, email);
+            ps.setInt(3, admin ? 1 : 0);
+            ps.setInt(4, idUser);
+
+            ps.executeUpdate();
+
+            ps.close();
+            conn.close();
+        } catch (SQLException e) {
+
+            throw new RuntimeException("Erro ao editar usuário.");
+
+        }
+    }
+
+    public void updateUser(int userId, String name, String email, String username, String password) {
+        var query = "UPDATE usuario set name = ?, email = ?, username = ?, password = ? WHERE id = ?";
+
+        try {
+            Connection conn = ConnectionSQLite.connect();
+            PreparedStatement ps = conn.prepareStatement(query);
+
+            ps.setString(1, name);
+            ps.setString(2, email);
+            ps.setString(3, username);
+            ps.setString(4, password);
+            ps.setInt(5, userId);
+
+            ps.executeUpdate();
+
+            ps.close();
+            conn.close();
+        } catch (SQLException e) {
+
+            throw new RuntimeException("Erro ao editar usuário.");
+
         }
     }
 }

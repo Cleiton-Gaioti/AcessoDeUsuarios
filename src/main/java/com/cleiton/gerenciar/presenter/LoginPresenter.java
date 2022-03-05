@@ -85,7 +85,9 @@ public class LoginPresenter implements IObservable {
                 var user = userDAO.login(username, PasswordEncryptor.encrypt(password));
 
                 if (user == null) {
+
                     JOptionPane.showMessageDialog(view, "Credenciais incorretas. Verifique sua senha e email.");
+
                 } else {
 
                     log.logUsuarioCRUD(new LogModel("entrou na conta", user.getName(), LocalDate.now(), LocalTime.now(),
@@ -96,7 +98,7 @@ public class LoginPresenter implements IObservable {
                     view.dispose();
                 }
             } catch (RuntimeException e) {
-                JOptionPane.showMessageDialog(view, "Erro ao realizar login." + e.getMessage());
+                JOptionPane.showMessageDialog(view, e.getMessage());
 
                 log.logFalha(new LogModel("entrou na conta", "", LocalDate.now(), LocalTime.now(), "", ""));
 
@@ -106,13 +108,13 @@ public class LoginPresenter implements IObservable {
     }
 
     @Override
-    public void registerObserver(IUserObserver observer) {
-        observers.add(observer);
+    public void registerObserver(Object observer) {
+        observers.add((IUserObserver) observer);
     }
 
     @Override
-    public void removeObeserver(IUserObserver observer) {
-        observers.remove(observer);
+    public void removeObeserver(Object observer) {
+        observers.remove((IUserObserver) observer);
     }
 
     @Override

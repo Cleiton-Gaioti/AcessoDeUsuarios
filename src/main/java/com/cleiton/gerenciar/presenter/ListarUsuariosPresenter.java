@@ -3,6 +3,7 @@ package com.cleiton.gerenciar.presenter;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JDesktopPane;
@@ -13,37 +14,30 @@ import com.cleiton.gerenciar.dao.UsuarioDAO;
 import com.cleiton.gerenciar.factory.ILogger;
 import com.cleiton.gerenciar.model.Administrador;
 import com.cleiton.gerenciar.model.LogModel;
-import com.cleiton.gerenciar.model.Notification;
 import com.cleiton.gerenciar.model.UserModel;
+import com.cleiton.gerenciar.model.interfaces.IObserver;
 import com.cleiton.gerenciar.view.ListarUsuariosView;
 
-public class ListarUsuariosPresenter {
+public class ListarUsuariosPresenter implements IObserver {
 
     // ATTRIBUTES
     private final ListarUsuariosView view;
-    private final JDesktopPane desktop;
-    private final ILogger log;
     private final DefaultTableModel tableModel;
     private final UsuarioDAO userDAO;
-    private List<UserModel> users;
+    private final Administrador admin;
+    private final ILogger log;
+    private final JDesktopPane desktop;
+    private List<UserModel> usersList;
 
     // CONSTRUCTOR
-    public ListarUsuariosPresenter(JDesktopPane desktop, ILogger log) {
+    public ListarUsuariosPresenter(JDesktopPane desktop, ILogger log, Administrador admin) {
         view = new ListarUsuariosView();
         userDAO = new UsuarioDAO();
         this.desktop = desktop;
+        this.admin = admin;
         this.log = log;
 
-        try {
-
-            users = userDAO.getAllUsers();
-
-        } catch (RuntimeException e) {
-
-            JOptionPane.showMessageDialog(view, e.getMessage());
-
-            log.logFalha(new LogModel("listar usuários", "", LocalDate.now(), LocalTime.now(), "", e.getMessage()));
-        }
+        reloadUsersList();
 
         tableModel = new DefaultTableModel(
                 new Object[][] {}, new String[] { "Id", "Tipo", "Nome", "Usuário", "Email", "Data de Cadastro",
@@ -61,7 +55,7 @@ public class ListarUsuariosPresenter {
         });
 
         view.getBtnSendNotification().addActionListener(l -> {
-            sendNotification();
+            sendNotification(desktop, log);
         });
 
         view.getBtnClose().addActionListener(l -> {
@@ -69,12 +63,11 @@ public class ListarUsuariosPresenter {
         });
 
         view.getBtnAddUser().addActionListener(l -> {
-            new CadastrarUsuarioAdministradorPresenter(desktop, log);
-            // TODO: add obeserver
+            new CadastrarUsuarioAdministradorPresenter(desktop, log).registerObserver(this);
         });
 
         view.getBtnUpdateUser().addActionListener(l -> {
-            // TODO: criar tela de update
+            updateUser();
         });
 
         view.getBtnRemoveUser().addActionListener(l -> {
@@ -82,11 +75,28 @@ public class ListarUsuariosPresenter {
         });
 
         view.getCheckSelectAll().addActionListener(l -> {
-            view.getTblUsuarios().selectAll();
+            if (view.getCheckSelectAll().isSelected())
+                view.getTblUsuarios().selectAll();
+            else
+                view.getTblUsuarios().clearSelection();
         });
 
         desktop.add(view);
         view.setVisible(true);
+    }
+
+    /* METHODS */
+    private void reloadUsersList() {
+        try {
+
+            usersList = userDAO.getAllUsers();
+
+        } catch (RuntimeException e) {
+
+            JOptionPane.showMessageDialog(view, e.getMessage());
+
+            log.logFalha(new LogModel("listar usuários", "", LocalDate.now(), LocalTime.now(), "", e.getMessage()));
+        }
     }
 
     private void searchUser() {
@@ -95,10 +105,10 @@ public class ListarUsuariosPresenter {
         try {
             if (text.isBlank() || text.isEmpty()) {
 
-                users = userDAO.getAllUsers();
+                usersList = userDAO.getAllUsers();
             } else {
 
-                users = userDAO.searchUsers(text);
+                usersList = userDAO.searchUsers(text);
 
             }
 
@@ -110,53 +120,116 @@ public class ListarUsuariosPresenter {
         }
     }
 
-    private void sendNotification() {
-        // TODO: implementar
+    private void updateUser() {
+        if (view.getTblUsuarios().getSelectedRows().length > 1) {
+
+            JOptionPane.showMessageDialog(view, "Só é possível alterar um usuário por vez.");
+
+        } else {
+            var row = view.getTblUsuarios().getSelectedRow();
+
+            if (row == -1) {
+
+                JOptionPane.showMessageDialog(view, "Selecione uma linha.");
+
+            } else {
+                var idUser = Integer.valueOf(view.getTblUsuarios().getValueAt(row, 0).toString());
+
+                try {
+                    var user = userDAO.getUserById(idUser);
+
+                    new CadastrarUsuarioAdministradorPresenter(desktop, log, user).registerObserver(this);
+
+                } catch (RuntimeException e) {
+
+                    JOptionPane.showMessageDialog(view, e.getMessage());
+
+                    log.logFalha(new LogModel("atualização de usuário", "", LocalDate.now(), LocalTime.now(), "",
+                            e.getMessage()));
+                }
+            }
+        }
+    }
+
+    private void sendNotification(JDesktopPane desktop, ILogger log) {
+
+        List<Integer> idsList = new ArrayList<>();
+
+        var rows = view.getTblUsuarios().getSelectedRows();
+
+        if (rows.length == 0) {
+
+            JOptionPane.showMessageDialog(view, "Nenhum usuário selecionado.");
+
+        } else {
+
+            for (int row : rows) {
+                var id = Integer.valueOf(view.getTblUsuarios().getValueAt(row, 0).toString());
+
+                idsList.add(id);
+            }
+
+            new SendNotificationPresenter(desktop, log, admin, idsList).registerObserver(this);;
+        }
+
     }
 
     private void remove() {
 
         if (view.getTblUsuarios().getSelectedRows().length > 1) {
+
             JOptionPane.showMessageDialog(view, "Só é possível remover um usuário por vez.");
+
         } else {
+
             var row = view.getTblUsuarios().getSelectedRow();
 
             if (row == -1) {
+
                 JOptionPane.showMessageDialog(view, "Selecione uma linha");
+
             } else {
 
                 var id = Integer.valueOf(view.getTblUsuarios().getValueAt(row, 0).toString());
                 var name = view.getTblUsuarios().getValueAt(row, 2).toString();
                 var username = view.getTblUsuarios().getValueAt(row, 3).toString();
 
-                String[] options = { "Sim", "Não" };
+                if (username.equals(admin.getUsername())) {
 
-                int resposta = JOptionPane.showOptionDialog(
-                        view,
-                        "Tem certeza que deseja remover o usuário " + name + "?",
-                        "Remover usuário",
-                        JOptionPane.YES_OPTION,
-                        JOptionPane.NO_OPTION,
-                        null,
-                        options,
-                        options[1]);
+                    JOptionPane.showMessageDialog(view,
+                            "Para excluir sua conta, vá no menu Usuário -> Alterar Cadastro.");
 
-                if (resposta == 0) {
+                } else {
 
-                    try {
-                        UsuarioDAO.removeUser(id);
+                    String[] options = { "Sim", "Não" };
 
-                        log.logUsuarioCRUD(
-                                new LogModel("remoção", name, LocalDate.now(), LocalTime.now(), username, ""));
+                    int resposta = JOptionPane.showOptionDialog(
+                            view,
+                            "Tem certeza que deseja remover o usuário " + name + "?",
+                            "Remover usuário",
+                            JOptionPane.YES_OPTION,
+                            JOptionPane.NO_OPTION,
+                            null,
+                            options,
+                            options[1]);
 
-                        users = userDAO.getAllUsers();
+                    if (resposta == 0) {
 
-                        loadTable();
-                    } catch (RuntimeException e) {
-                        JOptionPane.showMessageDialog(view, e.getMessage());
+                        try {
+                            userDAO.removeUser(id);
 
-                        log.logFalha(new LogModel("remoção", name, LocalDate.now(), LocalTime.now(), username,
-                                e.getMessage()));
+                            log.logUsuarioCRUD(
+                                    new LogModel("remoção", name, LocalDate.now(), LocalTime.now(), username, ""));
+
+                            reloadUsersList();
+
+                            loadTable();
+                        } catch (RuntimeException e) {
+                            JOptionPane.showMessageDialog(view, e.getMessage());
+
+                            log.logFalha(new LogModel("remoção", name, LocalDate.now(), LocalTime.now(), username,
+                                    e.getMessage()));
+                        }
                     }
                 }
             }
@@ -164,15 +237,13 @@ public class ListarUsuariosPresenter {
 
     }
 
-    // METHODS
     private void loadTable() {
         tableModel.setNumRows(0);
 
         var dataFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        for (UserModel u : users) {
+        for (UserModel u : usersList) {
             var tipo = Administrador.class.isInstance(u) ? "Administrador" : "Usuário";
-            var notifications = u.getNotifications().size();
 
             tableModel.addRow(
                     new Object[] {
@@ -182,8 +253,8 @@ public class ListarUsuariosPresenter {
                             u.getUsername(),
                             u.getEmail(),
                             u.getDataCadastro().format(dataFormat),
-                            notifications,
-                            countNotificationsRead(u.getNotifications())
+                            u.getNotifications().countNotifications(),
+                            u.getNotifications().countReadNotifications()
                     });
         }
 
@@ -191,15 +262,10 @@ public class ListarUsuariosPresenter {
 
     }
 
-    private int countNotificationsRead(List<Notification> notifications) {
-        var count = 0;
-
-        for (Notification n : notifications) {
-            if (n.wasRead()) {
-                count++;
-            }
-        }
-
-        return count;
+    @Override
+    public void update() {
+        reloadUsersList();
+        loadTable();
     }
+
 }

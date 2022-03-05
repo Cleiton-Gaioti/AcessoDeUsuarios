@@ -7,18 +7,26 @@ public final class Notification {
     private int id;
     private int idAdminWhoSent;
     private int idUser;
+    private String title;
     private String content;
     private boolean read;
     private LocalDate date;
 
     /* CONSTRUCTOR */
-    public Notification(int id, int idAdminWhoSent, int idUser, String content, boolean read, LocalDate date) {
+    public Notification(int id, int idAdminWhoSent, int idUser, String title, String content, boolean read,
+            LocalDate date) {
         setId(id);
         setIdAdminWhoSent(idAdminWhoSent);
         setIdUser(idUser);
+        setTitle(title);
         setContent(content);
         setRead(read);
         setDate(date);
+    }
+
+    public Notification(int idAdminWhoSent, int idUser, String title, String content, boolean read,
+            LocalDate date) {
+        this(-1, idAdminWhoSent, idUser, title, content, read, date);
     }
 
     /* GETTERS AND SETTERS */
@@ -46,12 +54,28 @@ public final class Notification {
         this.idUser = idUser;
     }
 
+    public String getTitle() {
+        return this.title;
+    }
+
+    private void setTitle(String title) {
+        if (title == null) {
+            throw new RuntimeException("Título nulo.");
+        } else if (title.isBlank() || title.isEmpty()) {
+            throw new RuntimeException("Informe um título.");
+        } else {
+            this.title = title;
+        }
+    }
+
     public String getContent() {
         return this.content;
     }
 
     private void setContent(String content) {
-        if (content == null || content.isEmpty() || content.isBlank()) {
+        if (content == null) {
+            throw new RuntimeException("Mensagem nulo.");
+        } else if (content.isEmpty() || content.isBlank()) {
             throw new RuntimeException("Entre com uma mensagem.");
         } else {
             this.content = content;
@@ -64,10 +88,6 @@ public final class Notification {
 
     private void setRead(boolean read) {
         this.read = read;
-    }
-
-    public boolean isRead() {
-        return this.read;
     }
 
     public boolean getRead() {

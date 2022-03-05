@@ -49,13 +49,17 @@ public class PrincipalPresenter implements IUserObserver {
 
         /* Menu de administrador */
         view.getMenuListarUsuarios().addActionListener(l -> {
-            new ListarUsuariosPresenter(view.getDesktop(), log);
+            new ListarUsuariosPresenter(view.getDesktop(), log, (Administrador) user);
         });
 
         /* Menu de configurações */
         view.getMenuSettings().addActionListener(l -> {
-            var settingsView = new SettingsPresenter(view.getDesktop());
-            settingsView.registerObserver(this);
+            new SettingsPresenter(view.getDesktop()).registerObserver(this);
+        });
+
+        /* Botão de notificações */
+        view.getBtnNotifications().addActionListener(l -> {
+            new ShowNotificationsPresenter(view.getDesktop(), log, user).registerObserver(this);
         });
 
         view.setSize(900, 600);
@@ -66,12 +70,12 @@ public class PrincipalPresenter implements IUserObserver {
     // METHODS
 
     private void updateUser() {
-        // TODO: implementar
+        new CadastrarUsuarioPresenter(view.getDesktop(), log, user).registerObserver(this);
+        ;
     }
 
     private void login() {
-        var loginPresenter = new LoginPresenter(view.getDesktop(), log);
-        loginPresenter.registerObserver(this);
+        new LoginPresenter(view.getDesktop(), log).registerObserver(this);
     }
 
     private void logout() {
@@ -97,13 +101,17 @@ public class PrincipalPresenter implements IUserObserver {
         }
     }
 
-    private void updateFooter(boolean isAdmin, String name) {
+    private void updateFooter(boolean isAdmin) {
 
         if (isAdmin) {
-            view.getTxtUser().setText("Administrador - " + name);
+            view.getTxtUser().setText("Administrador - " + user.getName());
         } else {
-            view.getTxtUser().setText("Usuário - " + name);
+            view.getTxtUser().setText("Usuário - " + user.getName());
         }
+
+        var unread = user.getNotifications().countUnreadNotifications();
+
+        view.getBtnNotifications().setText(unread + " notificações");
     }
 
     private void userDeslogadoLayout() {
@@ -157,7 +165,7 @@ public class PrincipalPresenter implements IUserObserver {
 
         var isAdmin = Administrador.class.isInstance(user);
 
-        updateFooter(isAdmin, user.getName());
+        updateFooter(isAdmin);
 
         if (isAdmin) {
             setEstado(new AdministradorLogadoState(this));
@@ -178,4 +186,5 @@ public class PrincipalPresenter implements IUserObserver {
     public void setEstado(LoginState newState) {
         state = newState;
     }
+
 }

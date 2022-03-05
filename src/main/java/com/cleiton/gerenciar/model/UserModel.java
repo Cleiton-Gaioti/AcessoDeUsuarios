@@ -1,13 +1,11 @@
 package com.cleiton.gerenciar.model;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
-import com.cleiton.gerenciar.factory.PasswordEncryptor;
+import com.cleiton.gerenciar.collection.NotificationCollection;
 
 public abstract class UserModel {
 
@@ -18,11 +16,11 @@ public abstract class UserModel {
     private String username;
     private String password;
     private LocalDate dataCadastro;
-    private List<Notification> notifications;
+    private NotificationCollection notifications;
 
     // CONSTRUCTOR
     public UserModel(int id, String name, String email, String username, String password, LocalDate data,
-            List<Notification> notifications) {
+            NotificationCollection notifications) {
         setId(id);
         setName(name);
         setEmail(email);
@@ -33,7 +31,7 @@ public abstract class UserModel {
     }
 
     public UserModel(int id, String name, String email, String username, String password, LocalDate data) {
-        this(id, name, email, username, password, data, new ArrayList<>());
+        this(id, name, email, username, password, data, new NotificationCollection());
     }
 
     public UserModel(String name, String email, String username, String password, LocalDate data) {
@@ -86,7 +84,7 @@ public abstract class UserModel {
         return this.username;
     }
 
-    private void setUsername(String username) {
+    public void setUsername(String username) {
         if (username == null || username.isBlank() || username.isEmpty()) {
 
             throw new RuntimeException("Nome de usuário inválido.");
@@ -105,7 +103,7 @@ public abstract class UserModel {
     }
 
     private void setPassword(String password) {
-        this.password = PasswordEncryptor.encrypt(password);
+        this.password = password;
     }
 
     public LocalDate getDataCadastro() {
@@ -121,11 +119,11 @@ public abstract class UserModel {
         }
     }
 
-    public List<Notification> getNotifications() {
+    public NotificationCollection getNotifications() {
         return this.notifications;
     }
 
-    private void setNotifications(List<Notification> notifications) {
+    private void setNotifications(NotificationCollection notifications) {
         this.notifications = notifications;
     }
 }

@@ -8,8 +8,6 @@ import java.time.format.DateTimeFormatter;
 import com.cleiton.gerenciar.model.LogModel;
 import com.opencsv.CSVWriter;
 
-// TODO: consertar log.
-
 public class LoggerCSV implements ILogger {
 
     // ATTRIBUTES

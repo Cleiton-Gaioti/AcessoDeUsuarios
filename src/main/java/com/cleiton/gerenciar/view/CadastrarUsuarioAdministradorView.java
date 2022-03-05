@@ -3,6 +3,7 @@ package com.cleiton.gerenciar.view;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
@@ -20,7 +21,7 @@ public class CadastrarUsuarioAdministradorView extends javax.swing.JInternalFram
         txtEmail = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         txtUsername = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
+        lblPassword = new javax.swing.JLabel();
         checkAdministrador = new javax.swing.JCheckBox();
         btnRegister = new javax.swing.JButton();
         btnClose = new javax.swing.JButton();
@@ -35,8 +36,9 @@ public class CadastrarUsuarioAdministradorView extends javax.swing.JInternalFram
 
         jLabel2.setText("Nome de usuário");
 
-        jLabel3.setText("Senha");
+        lblPassword.setText("Senha");
 
+        checkAdministrador.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
         checkAdministrador.setText("Administrador");
 
         btnRegister.setText("Cadastrar");
@@ -45,6 +47,7 @@ public class CadastrarUsuarioAdministradorView extends javax.swing.JInternalFram
 
         jLabel4.setText("Nome");
 
+        checkShowPassword.setFont(new java.awt.Font("Ubuntu", 0, 12)); // NOI18N
         checkShowPassword.setText("Mostrar Senha");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -54,24 +57,25 @@ public class CadastrarUsuarioAdministradorView extends javax.swing.JInternalFram
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtPassword)
                     .addComponent(txtName)
                     .addComponent(txtEmail)
                     .addComponent(txtUsername)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(btnClose)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnRegister))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
+                            .addComponent(lblPassword)
                             .addComponent(jLabel4)
                             .addComponent(jLabel1)
-                            .addComponent(jLabel2)
-                            .addComponent(txtPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(checkShowPassword)
-                            .addComponent(checkAdministrador))))
+                            .addComponent(jLabel2))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(checkShowPassword)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 156, Short.MAX_VALUE)
+                        .addComponent(checkAdministrador)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -90,18 +94,18 @@ public class CadastrarUsuarioAdministradorView extends javax.swing.JInternalFram
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(checkAdministrador))
+                .addComponent(lblPassword)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(checkShowPassword)
-                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(checkAdministrador))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnRegister)
                     .addComponent(btnClose))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -114,8 +118,8 @@ public class CadastrarUsuarioAdministradorView extends javax.swing.JInternalFram
     private javax.swing.JCheckBox checkShowPassword;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel lblPassword;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtName;
     private javax.swing.JPasswordField txtPassword;
@@ -152,5 +156,9 @@ public class CadastrarUsuarioAdministradorView extends javax.swing.JInternalFram
 
     public JCheckBox getCheckShowPassword() {
         return checkShowPassword;
+    }
+
+    public JLabel getLblPassword() {
+        return lblPassword;
     }
 }
