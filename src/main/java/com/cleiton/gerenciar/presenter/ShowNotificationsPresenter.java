@@ -12,6 +12,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
 
 import com.cleiton.gerenciar.dao.NotificationDAO;
+import com.cleiton.gerenciar.dao.UsuarioDAO;
 import com.cleiton.gerenciar.factory.ILogger;
 import com.cleiton.gerenciar.model.LogModel;
 import com.cleiton.gerenciar.model.UserModel;
@@ -24,7 +25,8 @@ public class ShowNotificationsPresenter implements IObservable {
     /* ATTRIBUTES */
     private final List<IUserObserver> observers;
     private final ShowNotificationsView view;
-    private final NotificationDAO dao;
+    private final NotificationDAO notDAO;
+    private final UsuarioDAO userDAO;
     private final UserModel user;
     private final ILogger log;
     private DefaultTableModel tableModel;
@@ -34,7 +36,8 @@ public class ShowNotificationsPresenter implements IObservable {
         tableModel = new DefaultTableModel();
         view = new ShowNotificationsView();
         observers = new ArrayList<>();
-        dao = new NotificationDAO();
+        notDAO = new NotificationDAO();
+        userDAO = new UsuarioDAO();
         this.user = user;
         this.log = log;
 
@@ -55,7 +58,7 @@ public class ShowNotificationsPresenter implements IObservable {
         view.getBtnSetAllRead().addActionListener(l -> {
             try {
                 user.getNotifications().getUnreadNotifications().forEach(n -> {
-                    dao.setReadNotification(n.getId());
+                    notDAO.setReadNotification(n.getId());
                 });
 
             } catch (RuntimeException e) {
@@ -78,17 +81,17 @@ public class ShowNotificationsPresenter implements IObservable {
         var row = view.getListNotifications().getSelectedRow();
 
         try {
-            var notification = dao
+            var notification = notDAO
                     .getNotificationsById(Integer.valueOf(view.getListNotifications().getValueAt(row, 0).toString()));
 
             view.getTxtTitle().setText(notification.getTitle());
             view.getTxtContent().setText(notification.getContent());
 
-            view.getListNotifications().setValueAt(notification.getTitle(), row, 0);
+            view.getListNotifications().setValueAt(notification.getTitle(), row, 1);
 
-            dao.setReadNotification(notification.getId());
+            notDAO.setReadNotification(notification.getId());
 
-            notifyObservers(user);
+            notifyObservers(userDAO.getUserById(user.getId()));
 
         } catch (RuntimeException e) {
             JOptionPane.showMessageDialog(view, e.getMessage());
