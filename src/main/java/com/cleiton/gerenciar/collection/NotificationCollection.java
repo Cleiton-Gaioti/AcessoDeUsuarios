@@ -67,6 +67,17 @@ public class NotificationCollection {
         return unreads;
     }
 
+    @Override
+    public String toString() {
+        var s = "";
+
+        for (Notification n : notifications) {
+            s += n.toString() + ", ";
+        }
+
+        return s;
+    }
+
     // GETTERS AND SETTERS
     public List<Notification> getNotifications() {
         return this.notifications;

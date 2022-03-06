@@ -96,8 +96,10 @@ public class PrincipalPresenter implements IUserObserver {
             setEstado(new UsuarioDeslogadoState(this));
             user = null;
             view.getTxtUser().setText("");
+            view.getBtnNotifications().setText("0 notificações");
             userDeslogadoLayout();
             login();
+
         }
     }
 

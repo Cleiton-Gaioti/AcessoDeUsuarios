@@ -27,7 +27,7 @@ public class ShowNotificationsPresenter implements IObservable {
     private final ShowNotificationsView view;
     private final NotificationDAO notDAO;
     private final UsuarioDAO userDAO;
-    private final UserModel user;
+    private UserModel user;
     private final ILogger log;
     private DefaultTableModel tableModel;
 
@@ -91,7 +91,9 @@ public class ShowNotificationsPresenter implements IObservable {
 
             notDAO.setReadNotification(notification.getId());
 
-            notifyObservers(userDAO.getUserById(user.getId()));
+            user = userDAO.getUserById(user.getId());
+            
+            notifyObservers(user);
 
         } catch (RuntimeException e) {
             JOptionPane.showMessageDialog(view, e.getMessage());

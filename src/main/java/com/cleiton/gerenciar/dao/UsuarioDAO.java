@@ -334,13 +334,15 @@ public class UsuarioDAO {
                 var administrator = rs.getInt("administrator") == 1;
                 var authorized = rs.getInt("authorized") == 1;
 
+                var notifications = new NotificationDAO().getNotificationsByUser(id);
+
                 if (administrator) {
 
-                    user = new Administrador(id, name, email, username, password, dataRegister);
+                    user = new Administrador(id, name, email, username, password, dataRegister, notifications);
 
                 } else {
 
-                    user = new Usuario(id, name, email, username, password, dataRegister, authorized);
+                    user = new Usuario(id, name, email, username, password, dataRegister, authorized, notifications);
 
                 }
             }

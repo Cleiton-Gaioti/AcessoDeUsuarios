@@ -266,6 +266,7 @@ public class ListarUsuariosPresenter implements IObserver {
     public void update() {
         reloadUsersList();
         loadTable();
+        view.getCheckSelectAll().setSelected(false);
     }
 
 }
