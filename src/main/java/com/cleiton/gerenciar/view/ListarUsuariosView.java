@@ -49,6 +49,8 @@ public class ListarUsuariosView extends javax.swing.JInternalFrame {
 
         checkSelectAll.setText("Selecionar Todos");
 
+        txtSearch.setToolTipText("Busca por id, nome, usuário ou email");
+
         btnSearchUser.setText("Buscar Usuário");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

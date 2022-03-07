@@ -11,14 +11,14 @@ import com.cleiton.gerenciar.factory.LoggerCSV;
 import com.cleiton.gerenciar.factory.LoggerJSON;
 import com.cleiton.gerenciar.factory.LoggerXML;
 import com.cleiton.gerenciar.model.interfaces.IObservable;
-import com.cleiton.gerenciar.model.interfaces.IUserObserver;
+import com.cleiton.gerenciar.model.interfaces.IObserver;
 import com.cleiton.gerenciar.view.SettingsView;
 
 public class SettingsPresenter implements IObservable {
 
     // ATTRIBUTES
     private final SettingsView view;
-    private final List<IUserObserver> observers;
+    private final List<IObserver> observers;
 
     // CONSTRUCTOR
     public SettingsPresenter(JDesktopPane desktop) {
@@ -54,13 +54,13 @@ public class SettingsPresenter implements IObservable {
     }
 
     @Override
-    public void registerObserver(Object observer) {
-        observers.add((IUserObserver) observer);
+    public void registerObserver(IObserver observer) {
+        observers.add(observer);
     }
 
     @Override
-    public void removeObeserver(Object observer) {
-        observers.remove((IUserObserver) observer);
+    public void removeObeserver(IObserver observer) {
+        observers.remove(observer);
     }
 
     @Override

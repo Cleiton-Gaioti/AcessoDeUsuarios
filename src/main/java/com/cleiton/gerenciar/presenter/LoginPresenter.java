@@ -15,7 +15,7 @@ import com.cleiton.gerenciar.factory.PasswordEncryptor;
 import com.cleiton.gerenciar.model.UserModel;
 import com.cleiton.gerenciar.model.LogModel;
 import com.cleiton.gerenciar.model.interfaces.IObservable;
-import com.cleiton.gerenciar.model.interfaces.IUserObserver;
+import com.cleiton.gerenciar.model.interfaces.IObserver;
 import com.cleiton.gerenciar.view.LoginView;
 
 public class LoginPresenter implements IObservable {
@@ -24,7 +24,7 @@ public class LoginPresenter implements IObservable {
     private final LoginView view;
     private final int countUsers;
     private final ILogger log;
-    private final List<IUserObserver> observers;
+    private final List<IObserver> observers;
     private final UsuarioDAO userDAO;
     private final JDesktopPane desktop;
 
@@ -108,13 +108,13 @@ public class LoginPresenter implements IObservable {
     }
 
     @Override
-    public void registerObserver(Object observer) {
-        observers.add((IUserObserver) observer);
+    public void registerObserver(IObserver observer) {
+        observers.add(observer);
     }
 
     @Override
-    public void removeObeserver(Object observer) {
-        observers.remove((IUserObserver) observer);
+    public void removeObeserver(IObserver observer) {
+        observers.remove(observer);
     }
 
     @Override

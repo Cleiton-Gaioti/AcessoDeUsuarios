@@ -81,6 +81,7 @@ public class CadastrarUsuarioAdministradorPresenter implements IObservable {
             saveChanges(user.getId(), user.getUsername());
         });
 
+        view.setTitle("Atualizar Dados");
         view.getBtnRegister().setText("Salvar Alterações");
 
         view.getTxtName().setText(user.getName());
@@ -198,19 +199,19 @@ public class CadastrarUsuarioAdministradorPresenter implements IObservable {
     }
 
     @Override
-    public void registerObserver(Object observer) {
+    public void registerObserver(IObserver observer) {
         observers.add((IObserver) observer);
     }
 
     @Override
-    public void removeObeserver(Object observer) {
+    public void removeObeserver(IObserver observer) {
         observers.remove((IObserver) observer);
     }
 
     @Override
     public void notifyObservers(Object obj) {
         observers.forEach(o -> {
-            o.update();
+            o.update(obj);
         });
     }
 

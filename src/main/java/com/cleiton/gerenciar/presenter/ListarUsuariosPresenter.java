@@ -169,7 +169,8 @@ public class ListarUsuariosPresenter implements IObserver {
                 idsList.add(id);
             }
 
-            new SendNotificationPresenter(desktop, log, admin, idsList).registerObserver(this);;
+            new SendNotificationPresenter(desktop, log, admin, idsList).registerObserver(this);
+            ;
         }
 
     }
@@ -245,17 +246,19 @@ public class ListarUsuariosPresenter implements IObserver {
         for (UserModel u : usersList) {
             var tipo = Administrador.class.isInstance(u) ? "Administrador" : "Usuário";
 
-            tableModel.addRow(
-                    new Object[] {
-                            u.getId(),
-                            tipo,
-                            u.getName(),
-                            u.getUsername(),
-                            u.getEmail(),
-                            u.getDataCadastro().format(dataFormat),
-                            u.getNotifications().countNotifications(),
-                            u.getNotifications().countReadNotifications()
-                    });
+            if (admin.getId() != u.getId()) {
+                tableModel.addRow(
+                        new Object[] {
+                                u.getId(),
+                                tipo,
+                                u.getName(),
+                                u.getUsername(),
+                                u.getEmail(),
+                                u.getDataCadastro().format(dataFormat),
+                                u.getNotifications().countNotifications(),
+                                u.getNotifications().countReadNotifications()
+                        });
+            }
         }
 
         view.getTblUsuarios().setModel(tableModel);
@@ -263,7 +266,7 @@ public class ListarUsuariosPresenter implements IObserver {
     }
 
     @Override
-    public void update() {
+    public void update(Object obj) {
         reloadUsersList();
         loadTable();
         view.getCheckSelectAll().setSelected(false);

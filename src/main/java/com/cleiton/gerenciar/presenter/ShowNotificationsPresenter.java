@@ -17,13 +17,13 @@ import com.cleiton.gerenciar.factory.ILogger;
 import com.cleiton.gerenciar.model.LogModel;
 import com.cleiton.gerenciar.model.UserModel;
 import com.cleiton.gerenciar.model.interfaces.IObservable;
-import com.cleiton.gerenciar.model.interfaces.IUserObserver;
+import com.cleiton.gerenciar.model.interfaces.IObserver;
 import com.cleiton.gerenciar.view.ShowNotificationsView;
 
 public class ShowNotificationsPresenter implements IObservable {
 
     /* ATTRIBUTES */
-    private final List<IUserObserver> observers;
+    private final List<IObserver> observers;
     private final ShowNotificationsView view;
     private final NotificationDAO notDAO;
     private final UsuarioDAO userDAO;
@@ -92,7 +92,7 @@ public class ShowNotificationsPresenter implements IObservable {
             notDAO.setReadNotification(notification.getId());
 
             user = userDAO.getUserById(user.getId());
-            
+
             notifyObservers(user);
 
         } catch (RuntimeException e) {
@@ -121,13 +121,13 @@ public class ShowNotificationsPresenter implements IObservable {
     }
 
     @Override
-    public void registerObserver(Object observer) {
-        observers.add((IUserObserver) observer);
+    public void registerObserver(IObserver observer) {
+        observers.add(observer);
     }
 
     @Override
-    public void removeObeserver(Object observer) {
-        observers.remove((IUserObserver) observer);
+    public void removeObeserver(IObserver observer) {
+        observers.remove(observer);
     }
 
     @Override

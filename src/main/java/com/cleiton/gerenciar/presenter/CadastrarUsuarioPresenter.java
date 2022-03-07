@@ -14,7 +14,7 @@ import com.cleiton.gerenciar.factory.ILogger;
 import com.cleiton.gerenciar.factory.PasswordEncryptor;
 import com.cleiton.gerenciar.model.Usuario;
 import com.cleiton.gerenciar.model.interfaces.IObservable;
-import com.cleiton.gerenciar.model.interfaces.IUserObserver;
+import com.cleiton.gerenciar.model.interfaces.IObserver;
 import com.cleiton.gerenciar.model.UserModel;
 import com.cleiton.gerenciar.model.LogModel;
 import com.cleiton.gerenciar.view.CadastrarUsuarioView;
@@ -24,7 +24,7 @@ public class CadastrarUsuarioPresenter implements IObservable {
 
     // ATTRIBUTES
     private final CadastrarUsuarioView view;
-    private final List<IUserObserver> observers;
+    private final List<IObserver> observers;
     private final UsuarioDAO userDAO;
     private final ILogger log;
 
@@ -50,6 +50,8 @@ public class CadastrarUsuarioPresenter implements IObservable {
                 view.getTxtPassword().setEchoChar('*');
             }
         });
+
+        view.getBtnRemoveRegister().setVisible(false);
 
         desktop.add(view);
         view.setVisible(true);
@@ -77,6 +79,11 @@ public class CadastrarUsuarioPresenter implements IObservable {
             }
         });
 
+        view.getBtnRemoveRegister().addActionListener(l -> {
+            remove(user);
+        });
+
+        view.setTitle("Atualizar Dados");
         view.getBtnRegister().setText("Salvar Alterações");
 
         view.getTxtName().setText(user.getName());
@@ -179,14 +186,46 @@ public class CadastrarUsuarioPresenter implements IObservable {
         }
     }
 
-    @Override
-    public void registerObserver(Object observer) {
-        observers.add((IUserObserver) observer);
+    private void remove(UserModel user) {
+        String[] options = { "Sim", "Não" };
+
+        int resposta = JOptionPane.showOptionDialog(
+                view,
+                "Tem certeza que deseja deletar sua conta?",
+                "Deletar conta",
+                JOptionPane.YES_OPTION,
+                JOptionPane.NO_OPTION,
+                null,
+                options,
+                options[1]);
+
+        if (resposta == 0) {
+
+            try {
+                userDAO.removeUser(user.getId());
+
+                log.logUsuarioCRUD(
+                        new LogModel("remoção", user.getName(), LocalDate.now(), LocalTime.now(), user.getUsername(),
+                                ""));
+
+            } catch (RuntimeException e) {
+                JOptionPane.showMessageDialog(view, e.getMessage());
+
+                log.logFalha(
+                        new LogModel("remoção", user.getName(), LocalDate.now(), LocalTime.now(), user.getUsername(),
+                                e.getMessage()));
+            }
+        }
     }
 
     @Override
-    public void removeObeserver(Object observer) {
-        observers.remove((IUserObserver) observer);
+    public void registerObserver(IObserver observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObeserver(IObserver observer) {
+        observers.remove(observer);
     }
 
     @Override

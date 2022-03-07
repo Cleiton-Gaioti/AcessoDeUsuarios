@@ -20,6 +20,7 @@ public class PrincipalView extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         txtUser = new javax.swing.JTextPane();
         btnNotifications = new javax.swing.JButton();
+        btnSolicitacao = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuUsuario = new javax.swing.JMenu();
         menuUpdate = new javax.swing.JMenuItem();
@@ -37,6 +38,8 @@ public class PrincipalView extends javax.swing.JFrame {
         jScrollPane1.setViewportView(txtUser);
 
         btnNotifications.setText("0 notificações");
+
+        btnSolicitacao.setText("Solicitações de Acesso");
 
         jMenuUsuario.setText("Usuário");
 
@@ -73,9 +76,11 @@ public class PrincipalView extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(desktop)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 476, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnNotifications, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE))
+                .addComponent(btnSolicitacao)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnNotifications, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -84,7 +89,9 @@ public class PrincipalView extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1)
-                    .addComponent(btnNotifications, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnNotifications, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSolicitacao))))
         );
 
         pack();
@@ -92,6 +99,7 @@ public class PrincipalView extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnNotifications;
+    private javax.swing.JButton btnSolicitacao;
     private javax.swing.JDesktopPane desktop;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenuAdministrador;
@@ -144,5 +152,9 @@ public class PrincipalView extends javax.swing.JFrame {
 
     public JMenuItem getMenuLogin() {
         return menuLogin;
+    }
+
+    public JButton getBtnSolicitacao() {
+        return btnSolicitacao;
     }
 }

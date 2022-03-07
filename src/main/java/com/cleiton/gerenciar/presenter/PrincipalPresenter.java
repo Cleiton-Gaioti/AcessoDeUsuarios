@@ -12,10 +12,10 @@ import com.cleiton.gerenciar.model.Administrador;
 import com.cleiton.gerenciar.model.AdministradorLogadoState;
 import com.cleiton.gerenciar.model.UserModel;
 import com.cleiton.gerenciar.model.UsuarioDeslogadoState;
-import com.cleiton.gerenciar.model.interfaces.IUserObserver;
+import com.cleiton.gerenciar.model.interfaces.IObserver;
 import com.cleiton.gerenciar.view.PrincipalView;
 
-public class PrincipalPresenter implements IUserObserver {
+public class PrincipalPresenter implements IObserver {
 
     // ATTRIBUTES
     private final PrincipalView view;
@@ -62,6 +62,10 @@ public class PrincipalPresenter implements IUserObserver {
             new ShowNotificationsPresenter(view.getDesktop(), log, user).registerObserver(this);
         });
 
+        view.getBtnSolicitacao().addActionListener(l -> {
+            new AutorizarUsuarioPresenter(view.getDesktop(), log, (Administrador) user);
+        });
+
         view.setSize(900, 600);
         view.setVisible(true);
         view.setLocationRelativeTo(view.getParent());
@@ -71,7 +75,6 @@ public class PrincipalPresenter implements IUserObserver {
 
     private void updateUser() {
         new CadastrarUsuarioPresenter(view.getDesktop(), log, user).registerObserver(this);
-        ;
     }
 
     private void login() {
@@ -121,6 +124,7 @@ public class PrincipalPresenter implements IUserObserver {
         view.getMenuUpdate().setVisible(false);
         view.getjMenuUsuario().setVisible(false);
         view.getjMenuAdministrador().setVisible(false);
+        view.getBtnSolicitacao().setVisible(false);
     }
 
     private void userLayout() {
@@ -133,6 +137,7 @@ public class PrincipalPresenter implements IUserObserver {
         view.getMenuLogin().setVisible(false);
         view.getMenuLogout().setVisible(true);
         view.getMenuUpdate().setVisible(true);
+        view.getBtnSolicitacao().setVisible(false);
     }
 
     private void adminLayout() {
@@ -145,10 +150,10 @@ public class PrincipalPresenter implements IUserObserver {
         view.getMenuLogin().setVisible(false);
         view.getMenuLogout().setVisible(true);
         view.getMenuUpdate().setVisible(true);
+        view.getBtnSolicitacao().setVisible(true);
     }
 
-    @Override
-    public void update(ILogger log) {
+    private void update(ILogger log) {
         /* ATUALIZA O MÉTODO DE LOG */
         this.log = log;
 
@@ -161,7 +166,7 @@ public class PrincipalPresenter implements IUserObserver {
         }
     }
 
-    public void update(UserModel user) {
+    private void update(UserModel user) {
         /* ATUALIZA A TELA PRINCIPAL QUANDO UM USUÁRIO REALIZA LOGIN */
         this.user = user;
 
@@ -175,6 +180,15 @@ public class PrincipalPresenter implements IUserObserver {
         } else {
             setEstado(new UsuarioLogadoState(this));
             userLayout();
+        }
+    }
+
+    @Override
+    public void update(Object obj) {
+        if (ILogger.class.isInstance(obj)) {
+            update((ILogger) obj);
+        } else {
+            update((UserModel) obj);
         }
     }
 

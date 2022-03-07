@@ -25,6 +25,7 @@ public class CadastrarUsuarioView extends javax.swing.JInternalFrame {
         jLabel1 = new javax.swing.JLabel();
         checkShowPassword = new javax.swing.JCheckBox();
         txtPassword = new javax.swing.JPasswordField();
+        btnRemoveRegister = new javax.swing.JButton();
 
         setTitle("Cadastrar Usuário");
 
@@ -43,6 +44,8 @@ public class CadastrarUsuarioView extends javax.swing.JInternalFrame {
         checkShowPassword.setFont(new java.awt.Font("Ubuntu", 0, 10)); // NOI18N
         checkShowPassword.setText("Mostrar Senha");
 
+        btnRemoveRegister.setText("Excluir Cadastro");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -56,7 +59,9 @@ public class CadastrarUsuarioView extends javax.swing.JInternalFrame {
                     .addComponent(txtUsername)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnClose)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 232, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
+                        .addComponent(btnRemoveRegister)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnRegister))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -92,7 +97,8 @@ public class CadastrarUsuarioView extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnClose)
-                    .addComponent(btnRegister))
+                    .addComponent(btnRegister)
+                    .addComponent(btnRemoveRegister))
                 .addContainerGap())
         );
 
@@ -103,6 +109,7 @@ public class CadastrarUsuarioView extends javax.swing.JInternalFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnRegister;
+    private javax.swing.JButton btnRemoveRegister;
     private javax.swing.JCheckBox checkShowPassword;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -140,5 +147,9 @@ public class CadastrarUsuarioView extends javax.swing.JInternalFrame {
 
     public JTextField getTxtUsername() {
         return txtUsername;
+    }
+
+    public JButton getBtnRemoveRegister() {
+        return btnRemoveRegister;
     }
 }

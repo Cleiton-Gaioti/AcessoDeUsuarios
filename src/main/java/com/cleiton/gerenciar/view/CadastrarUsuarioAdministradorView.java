@@ -1,4 +1,3 @@
-
 package com.cleiton.gerenciar.view;
 
 import javax.swing.JButton;
@@ -8,7 +7,6 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 public class CadastrarUsuarioAdministradorView extends javax.swing.JInternalFrame {
-
 
     public CadastrarUsuarioAdministradorView() {
         initComponents();
@@ -74,7 +72,7 @@ public class CadastrarUsuarioAdministradorView extends javax.swing.JInternalFram
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(checkShowPassword)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 156, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 198, Short.MAX_VALUE)
                         .addComponent(checkAdministrador)))
                 .addContainerGap())
         );
@@ -161,4 +159,5 @@ public class CadastrarUsuarioAdministradorView extends javax.swing.JInternalFram
     public JLabel getLblPassword() {
         return lblPassword;
     }
+
 }

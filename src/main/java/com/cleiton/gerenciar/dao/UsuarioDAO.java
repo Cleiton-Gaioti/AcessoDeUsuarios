@@ -245,6 +245,44 @@ public class UsuarioDAO {
         }
     }
 
+    public List<Usuario> getUsersUnauthorizeds() {
+        var query = "SELECT * FROM usuario WHERE authorized = 0";
+
+        try {
+            Connection conn = ConnectionSQLite.connect();
+            PreparedStatement ps = conn.prepareStatement(query);
+
+            ResultSet rs = ps.executeQuery();
+
+            List<Usuario> users = new ArrayList<>();
+
+            NotificationDAO notificationDAO = new NotificationDAO();
+
+            while (rs.next()) {
+                var id = rs.getInt("id");
+                var name = rs.getString("name");
+                var email = rs.getString("email");
+                var username = rs.getString("username");
+                var password = rs.getString("password");
+                var dataRegister = rs.getDate("dateRegister").toLocalDate();
+                var authorized = rs.getInt("authorized") == 1;
+
+                NotificationCollection notifications = notificationDAO.getNotificationsByUser(id);
+
+                users.add(
+                        new Usuario(id, name, email, username, password, dataRegister, authorized, notifications));
+            }
+
+            rs.close();
+            ps.close();
+            conn.close();
+
+            return users;
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar usuários.");
+        }
+    }
+
     public List<UserModel> searchUsers(String text) {
         var query = "SELECT * FROM usuario "
                 + "WHERE CAST(id AS VARCHAR) LIKE ? OR name LIKE ? OR username LIKE ? OR email LIKE ? ORDER BY name";
@@ -394,6 +432,26 @@ public class UsuarioDAO {
             ps.setString(3, username);
             ps.setString(4, password);
             ps.setInt(5, userId);
+
+            ps.executeUpdate();
+
+            ps.close();
+            conn.close();
+        } catch (SQLException e) {
+
+            throw new RuntimeException("Erro ao editar usuário.");
+
+        }
+    }
+
+    public void approveSolicitation(String username) {
+        var query = "UPDATE usuario SET authorized = 1 WHERE username = ?";
+
+        try {
+            Connection conn = ConnectionSQLite.connect();
+            PreparedStatement ps = conn.prepareStatement(query);
+
+            ps.setString(1, username);
 
             ps.executeUpdate();
 
