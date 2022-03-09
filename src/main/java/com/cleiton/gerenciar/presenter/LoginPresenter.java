@@ -53,7 +53,7 @@ public class LoginPresenter implements IObservable {
             }
         });
 
-        view.setLocation(250, 160);
+        view.setLocation((desktop.getWidth() - view.getWidth())/2, (desktop.getHeight() - view.getHeight())/2);
         desktop.add(view);
         view.setVisible(true);
     }
@@ -98,6 +98,7 @@ public class LoginPresenter implements IObservable {
                     view.dispose();
                 }
             } catch (RuntimeException e) {
+                
                 JOptionPane.showMessageDialog(view, e.getMessage());
 
                 log.logFalha(new LogModel("entrou na conta", "", LocalDate.now(), LocalTime.now(), "", ""));

@@ -16,6 +16,7 @@ import com.cleiton.gerenciar.model.Usuario;
 import com.cleiton.gerenciar.model.interfaces.IObservable;
 import com.cleiton.gerenciar.model.interfaces.IObserver;
 import com.cleiton.gerenciar.model.UserModel;
+import com.cleiton.gerenciar.model.Administrador;
 import com.cleiton.gerenciar.model.LogModel;
 import com.cleiton.gerenciar.view.CadastrarUsuarioView;
 import com.pss.senha.validacao.ValidadorSenha;
@@ -53,6 +54,7 @@ public class CadastrarUsuarioPresenter implements IObservable {
 
         view.getBtnRemoveRegister().setVisible(false);
 
+        view.setLocation((desktop.getWidth() - view.getWidth())/2, (desktop.getHeight() - view.getHeight())/2);
         desktop.add(view);
         view.setVisible(true);
     }
@@ -90,6 +92,7 @@ public class CadastrarUsuarioPresenter implements IObservable {
         view.getTxtEmail().setText(user.getEmail());
         view.getTxtUsername().setText(user.getUsername());
 
+        view.setLocation((desktop.getWidth() - view.getWidth())/2, (desktop.getHeight() - view.getHeight())/2);
         desktop.add(view);
         view.setVisible(true);
     }
@@ -202,7 +205,17 @@ public class CadastrarUsuarioPresenter implements IObservable {
         if (resposta == 0) {
 
             try {
-                userDAO.removeUser(user.getId());
+                if (Administrador.class.isInstance(user)) {
+                    var qtd = userDAO.countAdmins();
+
+                    userDAO.removeUser(user.getId());
+
+                    if (qtd == 1) {
+                        userDAO.selectAdmin();
+                    }
+
+                    notifyObservers(null);
+                }
 
                 log.logUsuarioCRUD(
                         new LogModel("remoção", user.getName(), LocalDate.now(), LocalTime.now(), user.getUsername(),
@@ -231,7 +244,7 @@ public class CadastrarUsuarioPresenter implements IObservable {
     @Override
     public void notifyObservers(Object obj) {
         observers.forEach(o -> {
-            o.update((UserModel) obj);
+            o.update(obj);
         });
     }
 

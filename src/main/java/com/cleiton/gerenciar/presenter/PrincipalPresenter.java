@@ -28,15 +28,17 @@ public class PrincipalPresenter implements IObserver {
         view = new PrincipalView();
         log = new LoggerCSV();
 
+        view.setSize(1366, 768);
+        
         setEstado(new UsuarioDeslogadoState(this));
-
+        
         login();
 
         userDeslogadoLayout();
 
         /* Menu de usuários */
         view.getMenuUpdate().addActionListener(l -> {
-            updateUser();
+            new CadastrarUsuarioPresenter(view.getDesktop(), log, user).registerObserver(this);
         });
 
         view.getMenuLogin().addActionListener(l -> {
@@ -44,7 +46,7 @@ public class PrincipalPresenter implements IObserver {
         });
 
         view.getMenuLogout().addActionListener(l -> {
-            logout();
+            logout(true);
         });
 
         /* Menu de administrador */
@@ -66,33 +68,32 @@ public class PrincipalPresenter implements IObserver {
             new AutorizarUsuarioPresenter(view.getDesktop(), log, (Administrador) user);
         });
 
-        view.setSize(900, 600);
         view.setVisible(true);
         view.setLocationRelativeTo(view.getParent());
     }
 
     // METHODS
-
-    private void updateUser() {
-        new CadastrarUsuarioPresenter(view.getDesktop(), log, user).registerObserver(this);
-    }
-
     private void login() {
         new LoginPresenter(view.getDesktop(), log).registerObserver(this);
     }
 
-    private void logout() {
-        String[] options = { "Sim", "Não" };
+    private void logout(boolean confirmar) {
 
-        int resposta = JOptionPane.showOptionDialog(
-                view,
-                "Tem certeza que deseja sair da sua conta?",
-                "Sair da conta",
-                JOptionPane.YES_OPTION,
-                JOptionPane.NO_OPTION,
-                null,
-                options,
-                options[1]);
+        var resposta = 0;
+
+        if (confirmar) {
+            String[] options = { "Sim", "Não" };
+
+            resposta = JOptionPane.showOptionDialog(
+                    view,
+                    "Tem certeza que deseja sair da sua conta?",
+                    "Sair da conta",
+                    JOptionPane.YES_OPTION,
+                    JOptionPane.NO_OPTION,
+                    null,
+                    options,
+                    options[1]);
+        }
 
         if (resposta == 0) {
             closeAllTabs();
@@ -102,7 +103,6 @@ public class PrincipalPresenter implements IObserver {
             view.getBtnNotifications().setText("0 notificações");
             userDeslogadoLayout();
             login();
-
         }
     }
 
@@ -187,8 +187,10 @@ public class PrincipalPresenter implements IObserver {
     public void update(Object obj) {
         if (ILogger.class.isInstance(obj)) {
             update((ILogger) obj);
-        } else {
+        } else if (UserModel.class.isInstance(obj)) {
             update((UserModel) obj);
+        } else {
+            logout(false);
         }
     }
 

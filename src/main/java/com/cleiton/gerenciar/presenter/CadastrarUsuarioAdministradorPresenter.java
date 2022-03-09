@@ -62,6 +62,7 @@ public class CadastrarUsuarioAdministradorPresenter implements IObservable {
             }
         });
 
+        view.setLocation((desktop.getWidth() - view.getWidth())/2, (desktop.getHeight() - view.getHeight())/2);
         desktop.add(view);
         view.setVisible(true);
     }
@@ -94,6 +95,7 @@ public class CadastrarUsuarioAdministradorPresenter implements IObservable {
         view.getTxtPassword().setVisible(false);
         view.getCheckShowPassword().setVisible(false);
 
+        view.setLocation((desktop.getWidth() - view.getWidth())/2, (desktop.getHeight() - view.getHeight())/2);
         desktop.add(view);
         view.setVisible(true);
     }

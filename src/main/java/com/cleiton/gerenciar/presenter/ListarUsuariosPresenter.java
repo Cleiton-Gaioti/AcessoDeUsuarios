@@ -8,6 +8,8 @@ import java.util.List;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import com.cleiton.gerenciar.dao.UsuarioDAO;
@@ -40,7 +42,7 @@ public class ListarUsuariosPresenter implements IObserver {
         reloadUsersList();
 
         tableModel = new DefaultTableModel(
-                new Object[][] {}, new String[] { "Id", "Tipo", "Nome", "Usuário", "Email", "Data de Cadastro",
+                new Object[][] {}, new String[] { "Id", "Tipo", "Nome", "Usuário", "Data de Cadastro",
                         "Notificações Enviadas", "Notificações Lidas" }) {
             @Override
             public boolean isCellEditable(final int row, final int column) {
@@ -81,6 +83,8 @@ public class ListarUsuariosPresenter implements IObserver {
                 view.getTblUsuarios().clearSelection();
         });
 
+        view.setLocation((desktop.getWidth() - view.getWidth()) / 2, (desktop.getHeight() - view.getHeight()) / 2);
+        view.setSize(1000, 500);
         desktop.add(view);
         view.setVisible(true);
     }
@@ -253,7 +257,6 @@ public class ListarUsuariosPresenter implements IObserver {
                                 tipo,
                                 u.getName(),
                                 u.getUsername(),
-                                u.getEmail(),
                                 u.getDataCadastro().format(dataFormat),
                                 u.getNotifications().countNotifications(),
                                 u.getNotifications().countReadNotifications()
@@ -262,6 +265,18 @@ public class ListarUsuariosPresenter implements IObserver {
         }
 
         view.getTblUsuarios().setModel(tableModel);
+        view.getTblUsuarios().getColumnModel().getColumn(0).setPreferredWidth(20);
+        view.getTblUsuarios().getColumnModel().getColumn(1).setPreferredWidth(50);
+        view.getTblUsuarios().getColumnModel().getColumn(2).setPreferredWidth(150);
+        view.getTblUsuarios().getColumnModel().getColumn(3).setPreferredWidth(50);
+
+        DefaultTableCellRenderer center = new DefaultTableCellRenderer();
+        center.setHorizontalAlignment(SwingConstants.CENTER);
+
+        view.getTblUsuarios().getColumnModel().getColumn(0).setCellRenderer(center);
+        view.getTblUsuarios().getColumnModel().getColumn(4).setCellRenderer(center);
+        view.getTblUsuarios().getColumnModel().getColumn(5).setCellRenderer(center);
+        view.getTblUsuarios().getColumnModel().getColumn(6).setCellRenderer(center);
 
     }
 

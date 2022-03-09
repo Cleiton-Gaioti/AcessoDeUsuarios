@@ -13,6 +13,20 @@ import com.cleiton.gerenciar.model.Notification;
 
 public class NotificationDAO {
 
+    private Connection conn;
+
+    public NotificationDAO(Connection conn) {
+        this.conn = conn;
+    }
+
+    public NotificationDAO() {
+        try {
+            this.conn = ConnectionSQLite.connect();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao criar conexão: " + e.getMessage());
+        }
+    }
+
     public static void createTableNotification() {
         var query = "CREATE TABLE IF NOT EXISTS notification("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -42,7 +56,7 @@ public class NotificationDAO {
                 + "VALUES (?, ?, ?, ?, ?, ?)";
 
         try {
-            Connection conn = ConnectionSQLite.connect();
+            conn = ConnectionSQLite.connect();
             PreparedStatement ps = conn.prepareStatement(query);
 
             ps.setInt(1, notification.getIdAdminWhoSent());
@@ -65,7 +79,7 @@ public class NotificationDAO {
         var query = "SELECT * FROM notification WHERE idUser = ?";
 
         try {
-            Connection conn = ConnectionSQLite.connect();
+            conn = ConnectionSQLite.connect();
             PreparedStatement ps = conn.prepareStatement(query);
 
             ps.setInt(1, idUser);
@@ -100,7 +114,7 @@ public class NotificationDAO {
         var query = "SELECT * FROM notification WHERE id = ?";
 
         try {
-            Connection conn = ConnectionSQLite.connect();
+            conn = ConnectionSQLite.connect();
             PreparedStatement ps = conn.prepareStatement(query);
 
             ps.setInt(1, id);
@@ -134,7 +148,7 @@ public class NotificationDAO {
         var query = "UPDATE notification set read = 1 WHERE id = ?";
 
         try {
-            Connection conn = ConnectionSQLite.connect();
+            conn = ConnectionSQLite.connect();
             PreparedStatement ps = conn.prepareStatement(query);
 
             ps.setInt(1, id);

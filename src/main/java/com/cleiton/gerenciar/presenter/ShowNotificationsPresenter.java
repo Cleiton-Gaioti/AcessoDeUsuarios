@@ -55,24 +55,11 @@ public class ShowNotificationsPresenter implements IObservable {
             view.dispose();
         });
 
-        view.getBtnSetAllRead().addActionListener(l -> {
-            try {
-                user.getNotifications().getUnreadNotifications().forEach(n -> {
-                    notDAO.setReadNotification(n.getId());
-                });
-
-            } catch (RuntimeException e) {
-                JOptionPane.showMessageDialog(view, e.getMessage());
-
-                log.logFalha(new LogModel("carga de notificação", user.getEmail(), LocalDate.now(), LocalTime.now(),
-                        user.getUsername(), e.getMessage()));
-            }
-        });
-
         view.getListNotifications().getSelectionModel().addListSelectionListener((ListSelectionEvent l) -> {
             setRead();
         });
 
+        view.setLocation((desktop.getWidth() - view.getWidth()) / 2, (desktop.getHeight() - view.getHeight()) / 2);
         desktop.add(view);
         view.setVisible(true);
     }
@@ -80,26 +67,32 @@ public class ShowNotificationsPresenter implements IObservable {
     private void setRead() {
         var row = view.getListNotifications().getSelectedRow();
 
-        try {
-            var notification = notDAO
-                    .getNotificationsById(Integer.valueOf(view.getListNotifications().getValueAt(row, 0).toString()));
+        if (row == -1) {
+            JOptionPane.showMessageDialog(view, "Selecione uma linha.");
+        } else {
 
-            view.getTxtTitle().setText(notification.getTitle());
-            view.getTxtContent().setText(notification.getContent());
+            try {
+                var notification = notDAO
+                        .getNotificationsById(
+                                Integer.valueOf(view.getListNotifications().getValueAt(row, 0).toString()));
 
-            view.getListNotifications().setValueAt(notification.getTitle(), row, 1);
+                view.getTxtTitle().setText(notification.getTitle());
+                view.getTxtContent().setText(notification.getContent());
 
-            notDAO.setReadNotification(notification.getId());
+                view.getListNotifications().setValueAt(notification.getTitle(), row, 1);
 
-            user = userDAO.getUserById(user.getId());
+                notDAO.setReadNotification(notification.getId());
 
-            notifyObservers(user);
+                user = userDAO.getUserById(user.getId());
 
-        } catch (RuntimeException e) {
-            JOptionPane.showMessageDialog(view, e.getMessage());
+                notifyObservers(user);
 
-            log.logFalha(new LogModel("carga de notificação", user.getEmail(), LocalDate.now(), LocalTime.now(),
-                    user.getUsername(), e.getMessage()));
+            } catch (RuntimeException e) {
+                JOptionPane.showMessageDialog(view, e.getMessage());
+
+                log.logFalha(new LogModel("carga de notificação", user.getEmail(), LocalDate.now(), LocalTime.now(),
+                        user.getUsername(), e.getMessage()));
+            }
         }
     }
 

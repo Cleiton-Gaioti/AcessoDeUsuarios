@@ -179,7 +179,7 @@ public class UsuarioDAO {
                 var administrator = rs.getInt("administrator") == 1;
                 var authorized = rs.getInt("authorized") == 1;
 
-                var notifications = new NotificationDAO().getNotificationsByUser(id);
+                var notifications = new NotificationDAO(conn).getNotificationsByUser(id);
 
                 if (!authorized) {
                     throw new RuntimeException(
@@ -213,7 +213,7 @@ public class UsuarioDAO {
 
             List<UserModel> users = new ArrayList<>();
 
-            NotificationDAO notificationDAO = new NotificationDAO();
+            NotificationDAO notificationDAO = new NotificationDAO(conn);
 
             while (rs.next()) {
                 var id = rs.getInt("id");
@@ -256,7 +256,7 @@ public class UsuarioDAO {
 
             List<Usuario> users = new ArrayList<>();
 
-            NotificationDAO notificationDAO = new NotificationDAO();
+            NotificationDAO notificationDAO = new NotificationDAO(conn);
 
             while (rs.next()) {
                 var id = rs.getInt("id");
@@ -285,7 +285,7 @@ public class UsuarioDAO {
 
     public List<UserModel> searchUsers(String text) {
         var query = "SELECT * FROM usuario "
-                + "WHERE CAST(id AS VARCHAR) LIKE ? OR name LIKE ? OR username LIKE ? OR email LIKE ? ORDER BY name";
+                + "WHERE CAST(id AS VARCHAR) LIKE ? OR name LIKE ? OR username LIKE ? ORDER BY name";
 
         try {
             Connection conn = ConnectionSQLite.connect();
@@ -294,13 +294,12 @@ public class UsuarioDAO {
             ps.setString(1, "%" + text + "%");
             ps.setString(2, "%" + text + "%");
             ps.setString(3, "%" + text + "%");
-            ps.setString(4, "%" + text + "%");
 
             ResultSet rs = ps.executeQuery();
 
             List<UserModel> users = new ArrayList<>();
 
-            NotificationDAO notificationDAO = new NotificationDAO();
+            NotificationDAO notificationDAO = new NotificationDAO(conn);
 
             while (rs.next()) {
                 var id = rs.getInt("id");
@@ -372,7 +371,7 @@ public class UsuarioDAO {
                 var administrator = rs.getInt("administrator") == 1;
                 var authorized = rs.getInt("authorized") == 1;
 
-                var notifications = new NotificationDAO().getNotificationsByUser(id);
+                var notifications = new NotificationDAO(conn).getNotificationsByUser(id);
 
                 if (administrator) {
 
@@ -459,8 +458,54 @@ public class UsuarioDAO {
             conn.close();
         } catch (SQLException e) {
 
-            throw new RuntimeException("Erro ao editar usuário.");
+            throw new RuntimeException("Erro ao editar usuário: " + e.getMessage());
 
         }
+    }
+
+    public int countAdmins() {
+        var query = "SELECT COUNT(1) AS qtd FROM usuario WHERE administrator = 1";
+
+        try {
+            Connection conn = ConnectionSQLite.connect();
+            Statement ps = conn.createStatement();
+
+            ResultSet rs = ps.executeQuery(query);
+
+            var admins = 0;
+
+            if (rs.next()) {
+                admins = rs.getInt("qtd");
+            }
+
+            rs.close();
+            ps.close();
+            conn.close();
+
+            return admins;
+        } catch (SQLException e) {
+
+            throw new RuntimeException("Erro ao contar admins: " + e.getMessage());
+
+        }
+    }
+
+    public void selectAdmin() {
+        var query = "UPDATE usuario SET administrator = 1 WHERE id = (SELECT MIN(id) FROM usuario)";
+
+        try {
+            Connection conn = ConnectionSQLite.connect();
+            Statement ps = conn.createStatement();
+
+            ps.executeUpdate(query);
+
+            ps.close();
+            conn.close();
+        } catch (SQLException e) {
+
+            throw new RuntimeException("Erro ao selecionar novo administrador: " + e.getMessage());
+
+        }
+
     }
 }
